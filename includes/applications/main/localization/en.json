@@ -1,0 +1,60 @@
+{"seo": {
+    "index": {
+        "index": {
+            "title": "Controller Index - Action Index - en"
+        }
+    }
+}, "terms": {
+    "global": {
+        "forms": {
+            "inputRequire": "Mandatory field",
+            "inputsRequire": "Mandatory fields",
+            "errorMimeType": "Unable to upload the file %s, file type not allowed.",
+            "errorMimeTypes": "Unable to upload the file %s, file types not allowed.",
+            "errorUploadSend": "Unable to upload the file %s.",
+            "errorUploadsSend": "Unable to upload the file %s.",
+            "errorInputWithAlternative": "Field values %s must match.",
+            "errorInputsWithAlternative": "Field values %s must match.",
+            "errorInputWithConfirm": "Field values %s must match.",
+            "errorInputsWithConfirm": "Field values %s must match.",
+            "errorInputRequire": "The field %s is mandatory.",
+            "errorInputsRequire": "Field values %s are not allowed.",
+            "errorInputIncorrect": "The value of the field %s is not allowed.",
+            "errorInputsIncorrect": "Field values %s are not allowed.",
+            "infosCaptcha": "Please enter the code mandatory above.",
+            "reloadCaptcha": "<a href='%s'>Click here <\/a> to reload image",
+            "noAvailableValue": "There is no value available.",
+            "upload": {
+                "seeFile": "See file",
+                "deleteFile": "Delete file",
+                "noFile": "No file selected.",
+                "browse": "Browse"
+            },
+            "chosen": {
+                "no_result_text": "",
+                "default_text": ""
+            }
+        },
+        "pagination": {
+            "previous": "Previous",
+            "next": "Next"
+        }
+    },
+    "backoffice": {
+        "h1": {
+            "add": "",
+            "edit": "",
+            "listing": ""
+        },
+        "titles": {
+            "add": "",
+            "edit": "",
+            "listing": ""
+        },
+        "forms": {
+            "editDone": "",
+            "addDone": "",
+            "errorSQL": ""
+        }
+    }
+}}

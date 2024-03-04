@@ -1,0 +1,244 @@
+@media print{
+    #debug{
+        display:none;
+    }
+}
+
+@mainBarHeight:24px;
+@buttonButtonBarHeight:@mainBarHeight+6px;
+@notice:#ffff66;
+@trace:#555;
+@query:#00ffff;
+@error:#ff0000;
+@warning:#ff9900;
+
+.transition(@pProp, @pDuration)
+{
+    -webkit-transition: @pProp @pDuration;
+    -moz-transition: @pProp @pDuration;
+    -ms-transition: @pProp @pDuration;
+    -o-transition: @pProp @pDuration;
+    transition: @pProp @pDuration;
+}
+
+#debug pre{
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:12px;
+}
+#debug{
+    z-index:999;
+    position:fixed;
+    bottom:0;
+    right:0;
+    font-size:12px;
+    outline:none;
+    overflow:hidden;
+    width:500px;
+    border-top:solid 1px #ddd;
+    border-left:solid 1px #ddd;
+    height:@mainBarHeight+(2*3px);
+    background:rgba(236, 241, 240, .4);
+
+    .transition(all, .3s);
+
+    *{
+        font-family:Arial, Helvetica, sans-serif;
+    }
+
+
+    &.maximized, &.fullscreen{
+        background:rgb(236, 241, 240);
+        width:100%;
+        .debug_bar{
+            .debug_control{
+                a{
+                    &.debug_toggle{
+                        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAAI0lEQVR4AWOAglEwCkbBKGDCENnB8J8A3IFqwDABo2AUjAIAUboRZYE0KBAAAAAASUVORK5CYII=");
+                    }
+                }
+            }
+        }
+    }
+
+    &.maximized{
+        border-left:none;
+        height:350px;
+    }
+
+    &.fullscreen{
+        border:none;
+        height:100%;
+        .debug_bar{
+            .debug_control{
+                a{
+                    &.debug_fullscreen{
+                        display:none;
+                    }
+                }
+            }
+        }
+    }
+
+    .clear{
+        clear:both;
+    }
+
+    .debug_bar{
+        height:30px;
+        .debug_global{
+            height:@mainBarHeight;
+            padding:3px;
+            float:left;
+            span{
+                display:inline-block;
+                height:@mainBarHeight;
+                line-height: @mainBarHeight;
+                padding-left:@mainBarHeight+4px;
+                background-repeat:no-repeat;
+                background-position:left bottom;
+                background-size:@mainBarHeight;
+                margin-left:4px;
+                &.debug_memory{
+                    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAUCAQAAABGmPfEAAABKklEQVR4AcXOr2vUcQDG8ddtFyzji8ykXlgUo0GLwb9A/wODXVbWZ5ltwWwRsU5UVnbBgckgHhxyxTSdmxzjYBicP/Z44ZAPH075gsH3qz88HfPquu6myy64iI/2vfPMKz+0aNmmI5n5MpWZI5uW/bWuNRMp3J1KYWJNl/k1dqRyZyqVHQ3UrRiJ2oepqI2sqGqMpKWJvpFG0YJtaemTWz6LbQsArEpL7135/XUVYMlYWnmrZ1dmxpaAdWllV+OxFNah40BaeOqMe1JyoMNVaeGhRbdF7Rob8kdfvTYU93HDN1HboC+OHYraS+fBOVwyEaVDx6LP0IketkRp31kAvBGlLfScGDIWewZORemBsieidGpgT4y7nlsEA5S9UPbId/P62fGPLfz3gV/YHWnDBGbKPAAAAABJRU5ErkJggg==");
+                }
+
+                &.debug_time{
+                    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAE0AAABNABiiVDWwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAIkSURBVFiFzZexTiNBDIa/WSQSRQLapEtLkRqKK6LtKBDX8jQ0eYFUobnuHuAQoqVKAU+AlII7iSKnKyMFKRQxxXqVydxkdmbFHmdpmpXt/x/ba3uMiBAjxpgWkAMXwDHQ0wMw1/ME3AD3IrKKciwiwaMgE2ABSORZqE2v0n8AuA2MgGUCsHuW6qO9C8f4UmCM6QI/gBNP0N6AKfBLw15GqQ98AfY9No/AVxH5XZkCYAC8eG4zAy6Bw0DUDlVn5rF/AQbBFABdD/gaGAOdqnxafjpqs/aQ6HoJUOT8wTH4CQx3gBi1aUORSo/OUH3YPh+wasJWHnnAjwK3PLV0TwN6Rx4Soy0CWkR2ta933TyVgBUJOx1L9BctFSYOw3FEnqMJqP7YwZiUf2CL7SYziym4GgQ6zt+xAFoZRXs9YCNXIvLKB4v6vLI+HQB5RtHbS3kD7j4a3JI7xSjlIqMYLKVMRWTRFLr6nlqfjjM2Ew2K9tq02Bg9l8CcetJP0LUxellNQIA/QFms34wxeR0nmcso1lBEnoFzJdEBbiNJbEXcJdCPJaAk7muQsDHmANdsmsOKwLgNNJmcTStfAnlgXK8svGuAM7Zb5GUqgR0k/p79xa5gY51BzVZcQeI7sBfTimsPowCJgQseHEZ1x3EiqSGhcaxKSQtJAnj1QqKKSStZws3jVjI1+Lyl1Cmif7aW/38PE6cmGn+axeSz0cepNwU+aep5/g4gwAw9neGyAwAAAABJRU5ErkJggg==");
+                }
+            }
+        }
+        .debug_control{
+            float:right;
+            height:@mainBarHeight;
+            padding:3px;
+            a{
+                display:inline-block;
+                height:@mainBarHeight;
+                line-height: @mainBarHeight;
+                cursor: pointer;
+                background-size:@mainBarHeight;
+                width:@mainBarHeight;
+
+                &.debug_close{
+                    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAbrwAAG68BXhqRHAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAC4SURBVFiF7ZVBCoMwEEX/L+QILrrJ/c/TI7jxEBV+NykUapJxrB2EDLh75j1QJpSEyLmF2kfACBgBlwogmUmmHXwimbugpO4DIANYATwATAZ+KuwKIDdZY0AqB6oX8SF/s+lwQOXgrwgL4w7oCTzy3QE1kVfuCqhEuOTugI0Il1xS/CK63ifYkP/vJ2yJvBE/kR+JsMpjVzFOvIxYXuhOuVoXSU8jnwDcJc1Nzhpw1oQvohEwAsIDXq360Fzr4Ph4AAAAAElFTkSuQmCC");
+                }
+                &.debug_toggle{
+                    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAbrwAAG68BXhqRHAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABjSURBVFiF7dTBCcAwDANAqXT/edzplAnaRxQQBRn8tHPEIEpCsq7o6wUUUMAJAMkhOdvzbhCRFABI4s78/09QQAF2SfpsAANAZs/b/vgPNIgKKCAOuA/seJxhOwfcip+ggAIW6XhRlm8Giv4AAAAASUVORK5CYII=");
+                }
+                &.debug_fullscreen{
+                    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAbrwAAG68BXhqRHAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADgSURBVFiF7ZdRCoMwEERnSq/gMXqI0kvbj/azB2iP4SGmPxasxmSlGUXowqIsK+9lISFSEraMw6b0v0ANAZItSQXzXl1gYZzHBTp3AckGwA3A6VOTxGGPbQIj+Gu2UVL1BNAAeAJQ/2z6d01614D3db/AHHwVgRzcLlCCWwUicJtAFJ4TOMZ39nck9vlFUpf55JqsJkxbAG2tlRenGB2VA75YoDZ8kYADHhZwwUMCTnhRwA3PCqwBLwnY4ZKmVzKSw0LkhPstMhOIZPbEjGTqTviwrTYR1ltxJPb/Z7R7gTcaFG1M9Zm4OQAAAABJRU5ErkJggg==");
+                }
+            }
+        }
+    }
+
+    .debug_buttons{
+
+        height:@buttonButtonBarHeight;
+        padding:0 5px;
+
+        &>div{
+            background: #fefefe;
+            display:inline-block;
+            padding:5px 10px;
+            border:solid 1px;
+            border-left-width:5px;
+            margin:0 4px 0 0;
+            cursor:pointer;
+            float:left;
+            &[rel="trace"]{
+                border-color:@trace;
+            }
+            &[rel="notice"]{
+                border-color:@notice;
+            }
+            &[rel="warning"]{
+                border-color:@warning;
+            }
+            &[rel="error"]{
+                border-color:@error;
+            }
+            &[rel="query"]{
+                border-color:@query;
+            }
+
+            &.disabled{
+                opacity:.5;
+            }
+
+            &.vars{
+                float:right;
+                margin:0 0 0 4px;
+            }
+        }
+    }
+
+    .debug_content{
+        overflow:hidden;
+        padding:5px;
+        height:~"calc(100% - "(@mainBarHeight + (3px*2)+ @buttonButtonBarHeight + 10px) ~")";
+        -webkit-box-shadow: inset 0 2px 2px rgba(0, 0, 0, .3);
+        -moz-box-shadow: inset 0 2px 2px rgba(0, 0, 0, .3);
+        box-shadow: inset 0 2px 2px rgba(0, 0, 0, .3);
+        background:#ffffff;
+
+        .debug_console{
+            height:100%;
+            overflow:auto;
+            width:~"calc(70% - 1px)";
+            border-right:solid 1px #efefef;
+            float:left;
+
+            .console{
+                border-collapse: collapse;
+                width:100%;
+                tr{
+                    &.odd
+                    {
+                        td{
+                            background: #f8fdf9;
+                        }
+                    }
+                    td{
+                        padding:5px 10px;
+                        border-bottom:solid 1px #e8e8e8;
+                        &.date{
+                            width:90px;color:#666;
+                        }
+                        &.file{
+                            width:160px;text-align: right;
+                        }
+                        &.trace{
+                            background:@trace;
+                        }
+                        &.notice{
+                            background:@notice;
+                        }
+                        &.warning{
+                            background:@warning;
+                        }
+                        &.error,&.exception{
+                            background:@error;
+                        }
+                        &.query{
+                            background: @query;
+                        }
+                        &.trace, &.notice, &.warning, &.error, &.query, &.exception{
+                            padding:0;width:7px;
+                            border-bottom:none;
+                        }
+                    }
+                }
+            }
+        }
+
+        .debug_vars{
+            height:100%;
+            overflow:auto;
+            width:calc(~"30% - 10px");
+            padding:5px;
+            float:right;
+        }
+    }
+}
+

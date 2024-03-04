@@ -1,0 +1,69 @@
+{"seo":{
+    "index":{
+        "index":{
+            "title":"FTP Deployment Tool"
+        }
+    }
+}, "terms":{
+    "global":{
+        "forms":{
+            "inputRequire":"Champ obligatoire",
+            "inputsRequire":"Champs obligatoires",
+            "errorMimeType":"Impossible d'uploader le fichier %s, type de fichier non-autoris&#233;.",
+            "errorMimeTypes":"Impossible d'uploader les fichiers %s, types de fichiers non autoris&#233;.",
+            "errorUploadSend":"Impossible d'uploader le fichier %s.",
+            "errorUploadsSend":"Impossible d'uploader les fichiers %s.",
+            "errorInputWithAlternative":"Un des champs %s, doit &ecirc;tre renseign&#233;.",
+            "errorInputsWithAlternative":"Un des champs %s, doit &ecirc;tre renseign&#233;.",
+            "errorInputWithConfirm":"Les valeurs des champs %s, doivent concorder.",
+            "errorInputsWithConfirm":"Les valeurs des champs %s, doivent concorder.",
+            "errorInputRequire":"Le champ %s est obligatoire.",
+            "errorInputsRequire":"Les champs %s sont obligatoires.",
+            "errorInputIncorrect":"La valeur du champ %s est incorrecte.",
+            "errorInputsIncorrect":"Les valeurs des champs %s sont incorrectes.",
+            "infosCaptcha":"Merci de saisir le code pr&#233;sent&#233;",
+            "reloadCaptcha":"<a href='%s'>Cliquez-ici<\/a> pour recharger l'image",
+            "noAvailableValue":"Il n'y a pas de valeur disponible.",
+            "error":"Une erreur s'est produite lors de l'enregistrement.",
+            "error2":"Une erreur s'est produite. Veuillez r&#233;essayer ult&#233;rieurement.",
+            "errorPseudo":"Le pseudo est d&#233;j&agrave; utilis&#233;, veuillez en entrer un autre.",
+            "upload":{
+                "seeFile":"Voir le fichier",
+                "deleteFile":"Supprimer le fichier",
+                "noFile":"Aucun fichier s&#233;lectionn&#233;.",
+                "browse":"Parcourir"
+            },
+            "chosen":{
+                "no_result_text":"Aucun r&#233;sultat pour :",
+                "default_text":"Cliquer pour s&#233;lectionner"
+            }
+        },
+        "pagination":{
+            "previous":"Pr&#233;c&#233;dent",
+            "next":"Suivant"
+        },
+	    "months":
+		[
+			"Janvier","F&#233;vrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Ao&ucirc;t", "Septembre", "Octobre", "Novembre", "D&#233;cembre"
+		]
+    },
+    "backoffice":{
+        "h1":{
+            "add":"%s - Ajouter",
+            "edit":"%s - Modifier",
+            "listing":"%s - Lister",
+            "view":"D&#233;tails - %s"
+        },
+        "titles":{
+            "add":"Ajouter une entr&#233;e - %s",
+            "edit":"modifier une entr&#233;e - %s",
+            "listing":"Liste les entr&#233;es - %s",
+            "view":"D&#233;tails - %s"
+        },
+        "forms":{
+            "editDone":"Modifications effectu&#233;es.",
+            "addDone":"Enregistrement effectu&#233;.",
+            "errorSQL":"Une erreur est apparue lors de l'enregistrement dans la base de donn&#233;es."
+        }
+    }
+}}

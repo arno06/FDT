@@ -1,0 +1,39 @@
+{
+    "applications":
+    {
+        "main":
+        {
+			"theme":"default",
+			"multiLanguage": false,
+			"defaultLanguage": "fr",
+			"currentLanguage": "fr",
+			"modules":{
+				"front": {
+					"useRoutingFile":true,
+					"defaultController":"core\\application\\DefaultController",
+					"action404":"notFound"
+				},
+				"back": {
+					"useRoutingFile":false,
+					"defaultController":"core\\application\\DefaultBackController",
+					"action404":"notFound"
+				}
+			}
+        }
+    },
+    "global": {
+		"debug":true,
+		"session": "php_fw",
+        "explainOnSelect": "",
+        "emailContact": "me@arnaud-nicolas.fr"
+    },
+    "server": {
+        "smtp": ""
+    },
+    "db": {
+      "default": {}
+    },
+	"extra": {
+
+    }
+}

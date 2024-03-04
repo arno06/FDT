@@ -1,0 +1,96 @@
+div.input.upload {
+  height: 35px;
+  font-size: 12px;
+}
+div.input.upload .status_bar,
+div.input.upload a.delete,
+div.input.upload a.file {
+  display: none;
+}
+div.input.upload input[type='file'] {
+  display: block;
+}
+div.input.upload .status_bar {
+  border: solid 1px #27ae60;
+  background: #27ae60;
+  position: relative;
+  width: 200px;
+  height: 25px;
+}
+div.input.upload.droppable{position:relative;}
+div.input.upload.droppable::before{position:absolute;top:0;left:0;width:100%;height:100%;background: #27ae60;content:'Déposer';color:#fff;display:flex;align-items: center;justify-content: center;}
+
+div.input.upload .status_bar .background,
+div.input.upload .status_bar .foreground {
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+div.input.upload .status_bar .background {
+  height: 100%;
+  background: #2ecc71;
+}
+div.input.upload .status_bar .foreground {
+  color: #ffffff;
+  font-weight: bold;
+  width: 100%;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+}
+div.input.upload a.delete,
+div.input.upload a.file {
+  margin-right: 5px;
+  text-decoration: none;
+  line-height: 12px;
+  height: 12px;
+  padding: 10px;
+  color: #ffffff;
+  background: #2A80B9;
+  border: solid 1px #ffffff;
+}
+div.input.upload a.delete span,
+div.input.upload a.file span {
+  vertical-align: top;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-image: url("glyphicons-halflings-white.png");
+}
+div.input.upload a.file.img {
+  vertical-align: middle;
+  background: none;
+  padding: 0;
+  height: 35px;
+}
+div.input.upload a.file.img img {
+  height: 35px;
+}
+div.input.upload a.file span {
+  margin-left: 3px;
+  background-position: -48px 0;
+}
+div.input.upload a.delete {
+  background: #E84C3D;
+  border-color: #C1392D;
+  padding: 5px;
+}
+div.input.upload a.delete span {
+  background-position: -312px 0;
+}
+div.input.upload.loading input[type='file'],
+div.input.upload.loading a.delete,
+div.input.upload.loading a.file {
+  display: none;
+}
+div.input.upload.loading div.status_bar {
+  display: block;
+}
+div.input.upload.has_file input[type='file'],
+div.input.upload.has_file div.status_bar {
+  display: none;
+}
+div.input.upload.has_file a.delete,
+div.input.upload.has_file a.file {
+  display: inline-block;
+}

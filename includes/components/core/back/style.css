@@ -1,0 +1,376 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:400,700,400italic);
+* {
+  font-family: Lato, Arial, Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
+}
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+  background: #DEE3E7;
+}
+body .error,
+body .confirmation {
+  margin: 5px auto;
+  text-align: center;
+  width: 480px;
+  padding: 10px;
+  color: #666;
+}
+body .error {
+  border: solid 1px #ffa69e;
+  background: #fff4f4;
+}
+body .confirmation {
+  border: solid 1px #8bff8b;
+  background: #f4fff4;
+}
+body .button {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 4px;
+  line-height: 14px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #ffffff;
+  background: #3598dc;
+  border: #297FB8 solid 1px;
+  outline: none;
+}
+body .button.small {
+  background: #79b8dc;
+  border-color: #3598dc;
+  padding: 3px 4px;
+}
+body .button.disabled {
+  background: #ECF0F1;
+  border-color: #BEC3C7;
+  color: #BEC3C7;
+  pointer-events: none;
+}
+body .button > span {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: url("imgs/glyphicons-halflings-white.png") no-repeat;
+}
+body .button.view > span {
+  background-position: -48px 0;
+}
+body .button.edit > span {
+  background-position: 0 -72px;
+}
+body .button.delete {
+  background: #E84C3D;
+  border-color: #C1392D;
+}
+body .button.delete > span {
+  background-position: -312px 0;
+}
+body .button.asc > span {
+  background-position: -288px -120px;
+}
+body .button.desc > span {
+  background-position: -312px -120px;
+}
+body menu#main {
+  position: fixed;
+  display: block;
+  float: left;
+  padding: 0;
+  width: 10%;
+  height: 100%;
+  background: #444444;
+}
+body menu#main li {
+  display: block;
+  text-align: center;
+  list-style: none;
+}
+body menu#main li a {
+  padding: 10px 0;
+  display: block;
+  text-decoration: none;
+  color: #d2d2d2;
+  font-weight: bold;
+}
+body menu#main li a.current {
+  color: #ffffff;
+  background: #297FB8;
+}
+body menu#main li.global > a > span {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: url("imgs/glyphicons-halflings-white.png") no-repeat;
+}
+body menu#main li.global.logout > a > span {
+  background-position: -384px 0;
+}
+body #content {
+  width: 90%;
+  height: 100%;
+  float: right;
+}
+body #content h1,
+body #content h2 {
+  font-weight: normal;
+  margin-left: 15px;
+}
+body #content h2 {
+  margin-top: 10px;
+}
+body #content .new-entry,
+body #content .back {
+  padding: 15px;
+}
+body #content > div.search {
+  width: 90%;
+  margin: 10px auto;
+  background: #ffffff;
+  border: solid 1px #ccc;
+}
+body #content > div.search form {
+  padding: 10px;
+}
+body #content > div.search form > .inp_search_s {
+  float: left;
+  margin-right: 10px;
+}
+body #content > div.search form > .inp_search_s label {
+  line-height: 24px;
+}
+body #content > div.search form > .inp_search_s .input {
+  float: right;
+}
+body #content > div.search form > .inp_search_s .input input {
+  margin-left: 7px;
+  padding: 4px;
+  width: 300px;
+  border-radius: 3px;
+  border: solid 1px #dddddd;
+  outline: none;
+}
+body #content > div.search form > .inp_search_s .input input:focus {
+  border-color: #aaa;
+}
+body #content > div.search form > .inp_search_s:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+body #content > div.search form:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+body #content .details.form form {
+  display: table;
+  width: 90%;
+  margin: 0 auto;
+  background: #ffffff;
+  border: solid 1px #cccccc;
+}
+body #content .details.form form div.component {
+  display: table-row;
+}
+body #content .details.form form div.component label,
+body #content .details.form form div.component div.input {
+  display: table-cell;
+  padding: 5px;
+}
+body #content .details.form form div.component label {
+  width: 20%;
+  color: #999;
+  text-align: right;
+  font-size: 13px;
+}
+body #content .details.form form div.component div.input textarea,
+body #content .details.form form div.component div.input input[type='text'] {
+  padding: 5px;
+  outline: none;
+  width: calc(93%);
+  border: solid 1px #ffffff;
+  background: #f8f8f8;
+}
+body #content .details.form form div.component div.input textarea:focus,
+body #content .details.form form div.component div.input input[type='text']:focus {
+  border: solid 1px #999;
+  background: #ffffff;
+}
+body #content .details.form form div.component div.input textarea {
+  height: 200px;
+  resize: vertical;
+}
+body #content .details table.data.secondary th {
+  padding: 10px 0;
+  background: #f6f6f6;
+}
+body #content .details table.data.secondary td {
+  text-align: center;
+}
+body #content .details table.data tr:hover {
+  cursor: default;
+}
+body #content .details table.data tr:hover > td {
+  background: #ffffff;
+}
+body #content .details table.data td {
+  border-top: solid 1px #eee;
+}
+body #content .details table.data td.label {
+  width: 20%;
+  text-align: right;
+  color: #999;
+}
+body #content .details table.data td.empty {
+  color: #cacaca;
+}
+body #content table {
+  border: solid 1px #ccc;
+  border-collapse: collapse;
+  font-size: 13px;
+  display: table;
+  width: 90%;
+  margin: 0 auto;
+}
+body #content table > thead {
+  background: #ECEFF0;
+}
+body #content table > thead > tr > th {
+  vertical-align: middle;
+  color: #3B444E;
+  font-weight: bold;
+  text-align: center;
+  font-size: 14px;
+  padding: 4px 0;
+}
+body #content table > thead > tr > th.edit,
+body #content table > thead > tr > th.delete,
+body #content table > thead > tr > th.view {
+  width: 50px;
+}
+body #content table > tbody {
+  background: #ffffff;
+}
+body #content table > tbody > tr {
+  padding: 13px 0;
+  cursor: pointer;
+}
+body #content table > tbody > tr.odd > td {
+  background: #fafafa;
+}
+body #content table > tbody > tr:hover > td {
+  background: #ECF0F1;
+}
+body #content table > tbody > tr > td {
+  vertical-align: middle;
+  padding: 5px;
+}
+body #content table > tbody > tr > td.edit,
+body #content table > tbody > tr > td.delete,
+body #content table > tbody > tr > td.view {
+  padding: 5px 0;
+}
+body #content .pagination {
+  padding: 5px 0;
+  background: #ffffff;
+  margin: 10px auto;
+  width: 90%;
+  border: solid 1px #ccc;
+}
+body #content .pagination > .previous {
+  text-align: right;
+  float: left;
+  width: 25%;
+}
+body #content .pagination > .pages {
+  text-align: center;
+  float: left;
+  width: 50%;
+}
+body #content .pagination > .next {
+  float: right;
+  width: 25%;
+}
+body #content .pagination:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+body footer {
+  position: fixed;
+  bottom: 0;
+  height: 14px;
+  text-align: center;
+  left: 0;
+  display: block;
+  width: 100%;
+  line-height: 14px;
+  font-size: 12px;
+  background: #ffffff;
+}
+body #connexion {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 0 0 15px;
+  width: 40%;
+  margin-left: -20%;
+  margin-top: -150px;
+  background: #ffffff;
+}
+body #connexion h1 {
+  padding: 10px 0;
+  font-weight: bold;
+  margin: 0 0 10px;
+  color: #ffffff;
+  background: #323A45;
+  text-align: center;
+}
+body #connexion form {
+  width: 50%;
+  margin: 0 auto;
+}
+body #connexion form div.mandatory {
+  color: #85a9bd;
+  font-size: 12px;
+  text-align: right;
+}
+body #connexion form .component {
+  margin: 10px 0 0;
+}
+body #connexion form .component label {
+  color: #9FA7B4;
+}
+body #connexion form .component input[type="text"],
+body #connexion form .component input[type="password"] {
+  border: solid 1px #E2E2E2;
+  background: #FAFBFD;
+  height: 30px;
+  outline: none;
+  width: calc(100% - 20px);
+  margin: 0 auto;
+  padding: 10px;
+}
+body #connexion form .component input[type="text"]:focus,
+body #connexion form .component input[type="password"]:focus {
+  background: #fcfdff;
+}
+body #connexion form .component input.button {
+  width: 100%;
+  padding: 20px 0;
+  border-radius: 0;
+  border: none;
+}
+body #connexion form .component input.button:active {
+  padding: 22px 0 18px;
+}

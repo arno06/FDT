@@ -1,0 +1,212 @@
+@media print {
+  #debug {
+    display: none;
+  }
+}
+#debug pre {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+#debug {
+  z-index: 999;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  font-size: 12px;
+  outline: none;
+  overflow: hidden;
+  width: 500px;
+  border-top: solid 1px #ddd;
+  border-left: solid 1px #ddd;
+  height: 30px;
+  background: rgba(236, 241, 240, 0.4);
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+#debug * {
+  font-family: Arial, Helvetica, sans-serif;
+}
+#debug.maximized,
+#debug.fullscreen {
+  background: #ecf1f0;
+  width: 100%;
+}
+#debug.maximized .debug_bar .debug_control a.debug_toggle,
+#debug.fullscreen .debug_bar .debug_control a.debug_toggle {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAAI0lEQVR4AWOAglEwCkbBKGDCENnB8J8A3IFqwDABo2AUjAIAUboRZYE0KBAAAAAASUVORK5CYII=");
+}
+#debug.maximized {
+  border-left: none;
+  height: 350px;
+}
+#debug.fullscreen {
+  border: none;
+  height: 100%;
+}
+#debug.fullscreen .debug_bar .debug_control a.debug_fullscreen {
+  display: none;
+}
+#debug .clear {
+  clear: both;
+}
+#debug .debug_bar {
+  height: 30px;
+}
+#debug .debug_bar .debug_global {
+  height: 24px;
+  padding: 3px;
+  float: left;
+}
+#debug .debug_bar .debug_global span {
+  display: inline-block;
+  height: 24px;
+  line-height: 24px;
+  padding-left: 28px;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 24px;
+  margin-left: 4px;
+}
+#debug .debug_bar .debug_global span.debug_memory {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAUCAQAAABGmPfEAAABKklEQVR4AcXOr2vUcQDG8ddtFyzji8ykXlgUo0GLwb9A/wODXVbWZ5ltwWwRsU5UVnbBgckgHhxyxTSdmxzjYBicP/Z44ZAPH075gsH3qz88HfPquu6myy64iI/2vfPMKz+0aNmmI5n5MpWZI5uW/bWuNRMp3J1KYWJNl/k1dqRyZyqVHQ3UrRiJ2oepqI2sqGqMpKWJvpFG0YJtaemTWz6LbQsArEpL7135/XUVYMlYWnmrZ1dmxpaAdWllV+OxFNah40BaeOqMe1JyoMNVaeGhRbdF7Rob8kdfvTYU93HDN1HboC+OHYraS+fBOVwyEaVDx6LP0IketkRp31kAvBGlLfScGDIWewZORemBsieidGpgT4y7nlsEA5S9UPbId/P62fGPLfz3gV/YHWnDBGbKPAAAAABJRU5ErkJggg==");
+}
+#debug .debug_bar .debug_global span.debug_time {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAE0AAABNABiiVDWwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAIkSURBVFiFzZexTiNBDIa/WSQSRQLapEtLkRqKK6LtKBDX8jQ0eYFUobnuHuAQoqVKAU+AlII7iSKnKyMFKRQxxXqVydxkdmbFHmdpmpXt/x/ba3uMiBAjxpgWkAMXwDHQ0wMw1/ME3AD3IrKKciwiwaMgE2ABSORZqE2v0n8AuA2MgGUCsHuW6qO9C8f4UmCM6QI/gBNP0N6AKfBLw15GqQ98AfY9No/AVxH5XZkCYAC8eG4zAy6Bw0DUDlVn5rF/AQbBFABdD/gaGAOdqnxafjpqs/aQ6HoJUOT8wTH4CQx3gBi1aUORSo/OUH3YPh+wasJWHnnAjwK3PLV0TwN6Rx4Soy0CWkR2ta933TyVgBUJOx1L9BctFSYOw3FEnqMJqP7YwZiUf2CL7SYziym4GgQ6zt+xAFoZRXs9YCNXIvLKB4v6vLI+HQB5RtHbS3kD7j4a3JI7xSjlIqMYLKVMRWTRFLr6nlqfjjM2Ew2K9tq02Bg9l8CcetJP0LUxellNQIA/QFms34wxeR0nmcso1lBEnoFzJdEBbiNJbEXcJdCPJaAk7muQsDHmANdsmsOKwLgNNJmcTStfAnlgXK8svGuAM7Zb5GUqgR0k/p79xa5gY51BzVZcQeI7sBfTimsPowCJgQseHEZ1x3EiqSGhcaxKSQtJAnj1QqKKSStZws3jVjI1+Lyl1Cmif7aW/38PE6cmGn+axeSz0cepNwU+aep5/g4gwAw9neGyAwAAAABJRU5ErkJggg==");
+}
+#debug .debug_bar .debug_control {
+  float: right;
+  height: 24px;
+  padding: 3px;
+}
+#debug .debug_bar .debug_control a {
+  display: inline-block;
+  height: 24px;
+  line-height: 24px;
+  cursor: pointer;
+  background-size: 24px;
+  width: 24px;
+}
+#debug .debug_bar .debug_control a.debug_close {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAbrwAAG68BXhqRHAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAC4SURBVFiF7ZVBCoMwEEX/L+QILrrJ/c/TI7jxEBV+NykUapJxrB2EDLh75j1QJpSEyLmF2kfACBgBlwogmUmmHXwimbugpO4DIANYATwATAZ+KuwKIDdZY0AqB6oX8SF/s+lwQOXgrwgL4w7oCTzy3QE1kVfuCqhEuOTugI0Il1xS/CK63ifYkP/vJ2yJvBE/kR+JsMpjVzFOvIxYXuhOuVoXSU8jnwDcJc1Nzhpw1oQvohEwAsIDXq360Fzr4Ph4AAAAAElFTkSuQmCC");
+}
+#debug .debug_bar .debug_control a.debug_toggle {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAbrwAAG68BXhqRHAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAABjSURBVFiF7dTBCcAwDANAqXT/edzplAnaRxQQBRn8tHPEIEpCsq7o6wUUUMAJAMkhOdvzbhCRFABI4s78/09QQAF2SfpsAANAZs/b/vgPNIgKKCAOuA/seJxhOwfcip+ggAIW6XhRlm8Giv4AAAAASUVORK5CYII=");
+}
+#debug .debug_bar .debug_control a.debug_fullscreen {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAbrwAAG68BXhqRHAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADgSURBVFiF7ZdRCoMwEERnSq/gMXqI0kvbj/azB2iP4SGmPxasxmSlGUXowqIsK+9lISFSEraMw6b0v0ANAZItSQXzXl1gYZzHBTp3AckGwA3A6VOTxGGPbQIj+Gu2UVL1BNAAeAJQ/2z6d01614D3db/AHHwVgRzcLlCCWwUicJtAFJ4TOMZ39nck9vlFUpf55JqsJkxbAG2tlRenGB2VA75YoDZ8kYADHhZwwUMCTnhRwA3PCqwBLwnY4ZKmVzKSw0LkhPstMhOIZPbEjGTqTviwrTYR1ltxJPb/Z7R7gTcaFG1M9Zm4OQAAAABJRU5ErkJggg==");
+}
+#debug .debug_buttons {
+  height: 30px;
+  padding: 0 5px;
+}
+#debug .debug_buttons > div {
+  background: #fefefe;
+  display: inline-block;
+  padding: 5px 10px;
+  border: solid 1px;
+  border-left-width: 5px;
+  margin: 0 4px 0 0;
+  cursor: pointer;
+  float: left;
+}
+#debug .debug_buttons > div[rel="trace"] {
+  border-color: #555555;
+}
+#debug .debug_buttons > div[rel="notice"] {
+  border-color: #ffff66;
+}
+#debug .debug_buttons > div[rel="warning"] {
+  border-color: #ff9900;
+}
+#debug .debug_buttons > div[rel="error"] {
+  border-color: #ff0000;
+}
+#debug .debug_buttons > div[rel="query"] {
+  border-color: #00ffff;
+}
+#debug .debug_buttons > div.disabled {
+  opacity: .5;
+}
+#debug .debug_buttons > div.vars {
+  float: right;
+  margin: 0 0 0 4px;
+}
+#debug .debug_content {
+  overflow: hidden;
+  padding: 5px;
+  height: calc(100% -  70px );
+  -webkit-box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.3);
+  background: #ffffff;
+}
+#debug .debug_content .debug_console {
+  height: 100%;
+  overflow: auto;
+  width: calc(70% - 1px);
+  border-right: solid 1px #efefef;
+  float: left;
+}
+#debug .debug_content .debug_console .console {
+  border-collapse: collapse;
+  width: 100%;
+}
+#debug .debug_content .debug_console .console tr.odd td {
+  background: #f8fdf9;
+}
+#debug .debug_content .debug_console .console tr td {
+  padding: 5px 10px;
+  border-bottom: solid 1px #e8e8e8;
+}
+#debug .debug_content .debug_console .console tr td.date {
+  width: 90px;
+  color: #666;
+}
+#debug .debug_content .debug_console .console tr td.file {
+  width: 160px;
+  text-align: right;
+}
+#debug .debug_content .debug_console .console tr td.trace {
+  background: #555555;
+}
+#debug .debug_content .debug_console .console tr td.notice {
+  background: #ffff66;
+}
+#debug .debug_content .debug_console .console tr td.warning {
+  background: #ff9900;
+}
+#debug .debug_content .debug_console .console tr td.error,
+#debug .debug_content .debug_console .console tr td.exception {
+  background: #ff0000;
+}
+#debug .debug_content .debug_console .console tr td.query {
+  background: #00ffff;
+}
+#debug .debug_content .debug_console .console tr td.trace,
+#debug .debug_content .debug_console .console tr td.notice,
+#debug .debug_content .debug_console .console tr td.warning,
+#debug .debug_content .debug_console .console tr td.error,
+#debug .debug_content .debug_console .console tr td.query,
+#debug .debug_content .debug_console .console tr td.exception {
+  padding: 0;
+  width: 7px;
+  border-bottom: none;
+}
+#debug .debug_content .debug_vars {
+  height: 100%;
+  overflow: auto;
+  width: calc(30% - 10px);
+  padding: 5px;
+  float: right;
+}
+
+#debug .debug_content .debug_vars ul.opcache{list-style: none;padding-left:0;}
+#debug .debug_content .debug_vars ul.opcache ul{list-style: none;padding-left:25px;}
+#debug .debug_content .debug_vars ul.opcache li{}
+#debug .debug_content .debug_vars ul.opcache li.opcache-dir>span{cursor: pointer;}
+#debug .debug_content .debug_vars ul.opcache li.opcache-file{cursor:default;}
+#debug .debug_content .debug_vars ul.opcache li.opcache-file span.invalidate{transition:all .4s;cursor:pointer;opacity:0;pointer-events:none;font-size:.8em;padding:3px 6px;margin-left:10px;background: #af0707;color:#fff;border-radius:3px;}
+#debug .debug_content .debug_vars ul.opcache li.opcache-file:hover span.invalidate{opacity:1;pointer-events: all;}

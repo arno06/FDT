@@ -1,0 +1,47 @@
+{
+	"front":
+	{
+		"/":
+		{
+			"*":
+			{
+				"controller":"index",
+				"action":"index"
+			}
+		},
+		"check/local-folder":
+		{
+			"*":
+			{
+				"controller":"local",
+				"action":"checkLocalFolder"
+			}
+		},
+		"check/ftp":
+		{
+			"*":
+			{
+				"controller":"ftp",
+				"action":"checkServer"
+			}
+		},
+		"list/local-files": {
+			"*": {
+				"controller": "local",
+				"action": "readLocalFolder"
+			}
+		},
+		"retrieve/updated-git-info": {
+			"*": {
+				"controller": "local",
+				"action": "getUpdatedGitInfo"
+			}
+		},
+		"retrieve/files-comparison": {
+			"*": {
+				"controller": "index",
+				"action": "filesComparison"
+			}
+		}
+	}
+}

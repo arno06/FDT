@@ -1,0 +1,23 @@
+{
+  "name_test": {
+    "tag": "datepicker",
+    "attributes": {
+      "data-format": "YYYY-MM-DD",
+      "data-comp": "webc-calendar"
+    },
+    "label": "Nom"
+  },
+  "value_test": {
+    "tag": "textarea",
+    "label": "Valeur"
+  },
+  "submit": {
+    "label": "",
+    "tag": "input",
+    "attributes": {
+      "type": "submit",
+      "value": "Valider",
+      "class": "button"
+    }
+  }
+}
