@@ -2,6 +2,8 @@
 
     const FILE_POOL_DATE_CHECK = 100;
 
+    let project_files;
+
     function init(){
         step2();
         //document.querySelector('.start.modal').classList.remove('hidden');
@@ -75,27 +77,77 @@
                 });
             }
             t.onComplete(()=>{
-                listFiles(files);
+                project_files = files;
+                let body = document.querySelector('.file.modal .body');
+                body.innerHTML = `<div class="form"><div class="search"><input type="search" name="search" placeholder="Filtrer"></div><div class="unversioned"><input type="checkbox" name="unversioned" id="unversioned_files"/><label for="unversioned_files">Par date de modification locale</label></div></div>
+<div class="list">
+</div>`;
+
+                document.querySelector('#unversioned_files').addEventListener('change', (e)=>{
+                    refreshFiles();
+                });
+
+                let to = null;
+                const changeSearchHandler = (e)=>{
+                    if(to){
+                        clearTimeout(to);
+                    }
+                    let value = e.currentTarget.value;
+                    to = setTimeout(refreshFiles, 100);
+                };
+                document.querySelector('input[name="search"]').addEventListener('change', changeSearchHandler);
+                document.querySelector('input[name="search"]').addEventListener('keyup', changeSearchHandler);
+
+                document.querySelector('.modal.file header .button').addEventListener('click', (e)=>{
+                    let selectedFiles = Array.from(document.querySelectorAll('.modal.file .list input[type="checkbox"]:checked')).map((pInput)=>pInput.value);
+
+                    if(!selectedFiles.length){
+                        return;
+                    }
+
+                    let fileSelectionModal = document.querySelector('.file.modal');
+                    let comparisonModal = document.querySelector('.comparison.modal');
+                    fileSelectionModal.classList.add('hidden');
+                    comparisonModal.classList.toggle('hidden');
+                    retrieveFileComparison(selectedFiles);
+                });
+
+                refreshFiles();
             });
         });
     }
 
-    function listFiles(pFiles){
+    function refreshFiles(){
         let body = document.querySelector('.file.modal .body');
 
         let perDays = [];
         let lastDate = null;
 
-        let versionedFiles = pFiles.filter((pFile)=>pFile.timestamp&&pFile.timestamp !== 'false').sort((pA, pB)=>{
-            const a = Number(pA.timestamp);
-            const b = Number(pB.timestamp);
+        let unversionedFiles = document.querySelector('#unversioned_files')?document.querySelector('#unversioned_files').checked:false;
+        let filteredSearch = document.querySelector('input[name="search"]')&&document.querySelector('input[name="search"]').value.length>3?document.querySelector('input[name="search"]').value:false;
+
+        let propTS = unversionedFiles?'last_m_time':'timestamp';
+
+        let versionedFiles = project_files.filter((pFile)=>{
+
+            if (filteredSearch !== false && pFile.filename.indexOf(filteredSearch) === -1){
+                return false;
+            }
+
+            if(unversionedFiles){
+                return true;
+            }
+            return pFile.timestamp&&pFile.timestamp !== 'false';
+        }).sort((pA, pB)=>{
+            const a = Number(pA[propTS]);
+            const b = Number(pB[propTS]);
             if(a === b){
                 return pA.filename.localeCompare(pB.filename);
             }
             return a>b?-1:1;
         }).map((pFile)=>{
             pFile.date = new Date();
-            pFile.date.setTime(Number(pFile.timestamp) * 1000);
+            pFile.date.setTime(Number(pFile[propTS]) * 1000);
             let h = pFile.date.getHours();
             let m = pFile.date.getMinutes();
             if(h<10){
@@ -119,33 +171,12 @@
             return pFile;
         });
 
-        let listHTML = perDays.reduce((pHTML, pFiles)=>{
+        document.querySelector('.file.modal .body .list').innerHTML = perDays.reduce((pHTML, pFiles)=>{
             return pHTML + '<div class="sublist"><div class="title">'+pFiles[0].dateString+'</div>'+pFiles.reduce((pHTMLList, pFile)=>{
                 let id = pFile.filename.replace(/(\.|\/)/g, '_');
                 return pHTMLList + '<div class="day"><div><input id="'+id+'" type="checkbox" value="'+pFile.filename+'"></div><label for="'+id+'" class="name" title="'+pFile.filename+'">'+pFile.file+'</label><div class="hours">'+pFile.hourString+'</div></div>';
             }, "")+'</div>';
         }, "");
-
-        body.innerHTML = `
-<div class="form"><div class="search"><input type="search" name="search" placeholder="Filtrer"></div><div class="unversioned"><input type="checkbox" name="unversioned"/><label>Voir les fichiers non versionnés</label></div></div>
-<div class="list">
-${listHTML}
-</div>`;
-
-        document.querySelector('.modal.file header .button').addEventListener('click', (e)=>{
-            let selectedFiles = Array.from(document.querySelectorAll('.modal.file .list input[type="checkbox"]:checked')).map((pInput)=>pInput.value);
-            console.log(selectedFiles);
-
-            if(!selectedFiles.length){
-                return;
-            }
-
-            let fileSelectionModal = document.querySelector('.file.modal');
-            let comparisonModal = document.querySelector('.comparison.modal');
-            fileSelectionModal.classList.add('hidden');
-            comparisonModal.classList.toggle('hidden');
-            retrieveFileComparison(selectedFiles);
-        });
     }
 
     function retrieveFileComparison(pSelectedFiles){

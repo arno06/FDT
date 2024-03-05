@@ -36,10 +36,13 @@ namespace app\main\controllers\front
             $final_files = [];
             foreach($files as $file){
                 $output = [];
+                $infos = stat($file['filename']);
+                $lastMTime = $infos['mtime'];
                 if(!exec('cd '.$local_folder.' && git log -1 --pretty="format:%ci" '.str_replace($local_folder.'/', '', $file['filename']), $output)){
+                    $file['last_m_time'] = $lastMTime;
                     $final_files[] = $file;
                 }else{
-                    $final_files[]= array("filename"=>$file['filename'], "timestamp"=>strtotime($output[0]), "last_modified_date"=>$output[0]);
+                    $final_files[]= array("filename"=>$file['filename'], "timestamp"=>strtotime($output[0]), "last_modified_date"=>$output[0], 'last_m_time'=>$lastMTime);
                 }
             }
 
