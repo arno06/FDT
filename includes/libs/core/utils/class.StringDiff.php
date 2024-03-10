@@ -30,6 +30,8 @@ namespace core\utils
 
         private $ranges = [];
 
+        public $identicals = false;
+
         public function __construct($pOriginal, $pTo){
             $this->original = $pOriginal;
             $this->new = $pTo;
@@ -72,6 +74,8 @@ namespace core\utils
             $this->deletions = array_map(function($pEntry){return $pEntry['index'];}, $this->deletions);
 
             $modifs = array_merge($this->additions, $this->deletions);
+
+            $this->identicals = empty($modifs);
 
             sort($modifs);
 

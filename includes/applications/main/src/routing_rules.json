@@ -42,6 +42,18 @@
 				"controller": "index",
 				"action": "filesComparison"
 			}
+		},
+		"upload/files": {
+			"*": {
+				"controller": "ftp",
+				"action": "uploadFiles"
+			}
+		},
+		"invalidate/op-cache": {
+			"*": {
+				"controller": "index",
+				"action": "invalidateOPCache"
+			}
 		}
 	}
 }

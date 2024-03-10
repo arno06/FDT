@@ -28,6 +28,7 @@ input[type="password"]:focus{border-bottom-color:#3B444E;}
 .modal{max-height:750px;height:700px;box-sizing:border-box;transition:all .3s;position:absolute;left:50%;top:50%;transform:translate(-50%, -50%);background:#fff;padding:1em;box-shadow: 0 1px 3px rgba(0, 0, 0, .3);}
 .modal.hidden{opacity: 0;pointer-events: none;margin-top:50px;}
 
+.modal.start{height:250px;}
 
 .modal .steps{display:flex;gap:1em;}
 .modal .steps .step{width:400px;display:flex;flex-direction: column;align-items: center;gap:1em;}
@@ -46,6 +47,9 @@ input[type="password"]:focus{border-bottom-color:#3B444E;}
 .modal .steps .step input[type="password"]{border:none;width:calc(50% - .5em);border-bottom:solid 1px #9FA7B4;background:none;box-sizing: border-box;}
 .modal .steps .step input[type="text"]:focus,
 .modal .steps .step input[type="password"]:focus{border-bottom-color:#3B444E;}
+
+.modal .steps .step .form .domain,
+.modal .steps .step .form .button{width:100%;}
 
 input[name="file_select"]{display:none;}
 
@@ -77,18 +81,32 @@ input[name="file_select"]{display:none;}
 
 .modal.comparison{width:1200px;}
 
-.modal.comparison .body{overflow: auto;}
-.comparisons .comparison{display:flex;flex-wrap: wrap; gap:.5em;overflow:auto;}
-.comparisons .identicals{display:flex;align-items: center;justify-content: center;padding: 1em 0;font-size:0.8em;color:#999;font-style: italic;}
-.comparisons .filename{margin-top:1em;display:flex;justify-content:space-between;background:#fafafa;position:sticky;top:0;align-items: center;padding:.5em;border-top:solid 1px #efefef;}
-.comparisons .filename>div{display:flex;gap:.5em;font-size:0.8em;}
+.modal.comparison .body{overflow: auto;margin-top:1em;}
+.comparisons .comparison{display:flex;flex-wrap: wrap; gap:.5em;overflow:auto;border:solid 1px #eee;border-top:none;margin-bottom:1.5em;}
+.comparisons .identicals{display:flex;align-items: center;justify-content: center;padding: 1em 0;font-size:0.8em;color:#999;font-style: italic;border:solid 1px #eee;border-top:none;margin-bottom:1.5em;}
+.comparisons .filename{font-size:0.7em;display:flex;justify-content:space-between;background:#fafafa;position:sticky;top:0;align-items: center;padding:.5em;border:solid 1px #eee;border-bottom:none;}
+.comparisons .filename>div{display:flex;gap:.5em;align-items: center;}
 .comparisons .filename>div .additions{color:#27ae60;}
 .comparisons .filename>div .deletions{color:#C1392D;}
+.comparisons .filename>div .upload{display:flex;align-items: center;}
 .comparisons .file{width:calc(50% - .5em);overflow:auto;border-left:solid #eaeaea 1px;}
 .comparisons .file .hidden_lines{width:100%;height:20px;background: #eef4fc;}
 .comparisons .file .line{display:flex;align-items: center;}
 .comparisons .file .line .number{width:40px;flex:0 0 auto;font-size:0.7em;text-align: center;color:#666;}
 .comparisons .file .line .data{flex:1 1 auto;margin:0;font-size:0.9em;border-left:1px solid #eaeaea;padding-left:5px;}
+
+.modal.upload{width:800px;}
+.modal.upload .body .loading_message .steps{flex-direction: column;}
+.modal.upload .body .loading_message .steps>div{display:flex;align-items: center;gap:1em;}
+.modal.upload .body .loading_message .steps>div>span{display:none;}
+.modal.upload .body .loading_message .steps>div.done{color:#27ae60;}
+.modal.upload .body .loading_message .steps>div.done span.done{display:block;}
+.modal.upload .body .loading_message .steps>div.error{color:#C1392D;}
+.modal.upload .body .loading_message .steps>div.error span.error{display:block;}
+.modal.upload .body .loading_message .steps>div.current{color:#444;}
+.modal.upload .body .loading_message .steps>div.waiting{color:#9FA7B4}
+.modal.upload .body .loading_message .steps>div.waiting span.current,
+.modal.upload .body .loading_message .steps>div.current span.current{display:block;}
 
 div.deleted{background:rgba(255, 0, 0, .2);}
 div.added{background:rgba(0, 255, 0, .2);}

@@ -5,8 +5,7 @@
     let project_files;
 
     function init(){
-        step2();
-        //document.querySelector('.start.modal').classList.remove('hidden');
+        document.querySelector('.start.modal').classList.remove('hidden');
         document.querySelector('.go').addEventListener('click', startHandler);
         document.querySelector('.comparison.modal header .button.return').addEventListener('click', backToSelection);
     }
@@ -43,12 +42,12 @@
             if(pResults.filter((pR)=>pR.content!==null)){
                 document.querySelector('.file header h2').innerHTML = document.querySelector('input[name="local_folder"]').value+'<span>'+checkFolder.branch+'</span>';
                 startingModalActions.innerHTML = '';
-                step2();
+                fileSelectStep();
             }
         });
     }
 
-    function step2(){
+    function fileSelectStep(){
         let fileSelectionModal = document.querySelector('.file.modal');
         let startingModalActions = document.querySelector('.start.modal .actions');
         setTimeout(()=>{
@@ -184,7 +183,58 @@
         let params = extractParams(['local_folder', 'host', 'user', 'pass', 'folder']);
         params.files = pSelectedFiles;
         serverPromise('retrieve/files-comparison?render=true', params).then((pContent)=>{
-            document.querySelector('.modal.comparison .body').innerHTML = pContent.html;
+            document.querySelector('.modal.comparison .body').innerHTML = pContent.html||"Une erreur est apparue";
+        });
+        document.querySelector('.modal.comparison .upload_action').addEventListener('click', deployHandler);
+    }
+
+    function deployHandler(){
+        document.querySelector('.modal.comparison').classList.add('hidden');
+        document.querySelector('.modal.upload').classList.remove('hidden');
+        let files = Array.from(document.querySelectorAll('.modal.comparison .upload input[type="checkbox"]:checked')).map((pInput)=>pInput.value);
+        let params = extractParams(['local_folder', 'host', 'user', 'pass', 'folder', 'domain']);
+        params.files = files;
+
+        const setStep = (pSteps)=>{
+            for(let i in pSteps){
+                if(!pSteps.hasOwnProperty(i)){
+                    continue;
+                }
+                let actions = pSteps[i];
+                for(let j in actions){
+                    if(!actions.hasOwnProperty(j)){
+                        continue;
+                    }
+                    document.querySelector('.modal.upload .body .steps .'+i).classList[j](actions[j]);
+                }
+            }
+        };
+
+        setStep({upload:{add:"current", remove:"waiting"}});
+        serverPromise('upload/files', params).then((pResponse)=>{
+            if(!pResponse){
+                setStep({upload:{remove:"current", add:"error"}});
+                console.log(pResponse);
+                return;
+            }
+            setStep({upload:{remove:"current", add:"done"}, compare:{add:"current", remove:"waiting"}});
+            serverPromise('retrieve/files-comparison', params).then((pResponse)=>{
+                if(!pResponse || !pResponse.content || !pResponse.content.identicals){
+                    setStep({compare:{remove:"current", add:"error"}});
+                    console.log(pResponse);
+                    return;
+                }
+                setStep({compare:{remove:"current", add:"done"}, opcache:{add:"current", remove:"waiting"}});
+                serverPromise('invalidate/op-cache', params).then((pResponse)=>{
+                    if(!pResponse){
+                        setStep({opcache:{remove:"current", add:"error"}});
+                        console.log(pResponse);
+                        return;
+                    }
+                    setStep({opcache:{remove:"current", add:"done"}});
+                    console.log("finished");
+                });
+            });
         });
     }
 
@@ -199,7 +249,7 @@
     function serverPromise(pUrl, pParams){
         return new Promise((pResolve, pError)=>{
             Request.load(pUrl, extractParams(pParams)).onComplete((e)=>{
-                if(e.currentTarget.responseJSON.content.error){
+                if(!e.currentTarget.responseJSON || e.currentTarget.responseJSON.content.error){
                     pResolve(null);
                     return;
                 }

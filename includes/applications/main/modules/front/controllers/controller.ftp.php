@@ -1,33 +1,44 @@
 <?php
 namespace app\main\controllers\front{
 
-    use core\application\DefaultController;
 
-    class ftp extends DefaultController{
+    use app\main\src\application\FDTController;
+
+    class ftp extends FDTController {
 
         public function __construct(){
 
         }
 
         public function checkServer(){
-            $host = $_POST['host'];
-            $user = $_POST['user'];
-            $pass = $_POST['pass'];
-            $folder = $_POST['folder'];
-            $ftp = ftp_ssl_connect($host);
-            $login_result = ftp_login($ftp, $user, $pass);
-            if (!$login_result) {
+
+            if(!$this->initConnection()){
                 $this->addContent('error', true);
                 return;
             }
-            ftp_pasv($ftp, true);
+            $this->addContent('result', true);
+            ftp_close($this->ftp);
+        }
 
-            if (!ftp_chdir($ftp, $folder)) {
+        public function uploadFiles(){
+            if(!$this->initConnection()){
                 $this->addContent('error', true);
-            }else{
-                $this->addContent('result', true);
+                return;
             }
-            ftp_close($ftp);
+            $local_folder = $_POST['local_folder'];
+            $files = $_POST['files'];
+            $uploaded = 0;
+            foreach($files as $file){
+                $distant = str_replace($local_folder.'/', '', $file);
+
+                if(ftp_put($this->ftp, $distant, $file, FTP_ASCII)){
+                    $uploaded++;
+                }
+            }
+            if(count($files) === $uploaded){
+                $this->addContent('uploaded', true);
+            }
+            ftp_close($this->ftp);
         }
     }
 }
