@@ -49,7 +49,7 @@ namespace core\utils
                         $diff -= 1;
                     continue;
                 }
-                if($l === $l2){
+                if(trim($l) === trim($l2)){
                     continue;
                 }
                 for($k = $i + $diff; $k<count($this->new); $k++){
