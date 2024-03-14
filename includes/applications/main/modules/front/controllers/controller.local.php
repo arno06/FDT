@@ -35,17 +35,26 @@ namespace app\main\controllers\front
             $local_folder = $_POST['local_folder'];
 
             $max_pool = 50;
+            $cmd = [];
 
             for($j = 0,$maxJ = ceil(count($files)/$max_pool); $j<$maxJ; $j++){
 
                 $commands = ['cd '.$local_folder];
                 for($i = $j * $max_pool, $max = min(($j * $max_pool)+$max_pool, count($files)); $i<$max; $i++){
                     $file = $files[$i];
+                    if(!$file || !$file['filename']){
+                        continue;
+                    }
                     $commands[]= 'git log -1 --pretty="format:'.$i.'|%ci;" '.str_replace($local_folder.'/', '', $file['filename']);
                 }
                 $output = [];
 
                 exec(implode(' && ', $commands), $output);
+
+                if(!$output){
+                    $cmd[] = $commands;
+                    continue;
+                }
 
                 $output = explode(';', $output[0]);
 
@@ -59,6 +68,9 @@ namespace app\main\controllers\front
                 }
             }
 
+            if(!empty($cmd)){
+                $this->addContent('cmd', $cmd);
+            }
             $this->addContent('files', $files);
         }
 

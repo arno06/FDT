@@ -1,8 +1,8 @@
 (()=>{
 
-    const GIT_CHECK_FILE_COUNT = 50;
+    const GIT_CHECK_FILE_COUNT = 125;
 
-    const GIT_CHECK_CONCURRENT_CALLS = 3;
+    const GIT_CHECK_CONCURRENT_CALLS = 4;
 
     let project_files;
     let environments = [];
@@ -58,26 +58,28 @@
         startingModalActions.classList.toggle('loading');
 
         serverPromise('check/local-folder', ['local_folder']).then((pResult)=>{
-            let checkFolder = pResult.content;
+            let checkFolder = pResult?.content;
 
             let number_local = document.querySelector('.local_folder.number');
-            let c = checkFolder === null ? 'close':'done';
+            let c = !checkFolder? 'close':'done';
             number_local.classList.remove('close', 'done');
             number_local.classList.add(c);
             number_local.innerHTML = '1<span class="material-symbols-outlined">'+c+'</span>';
 
             serverPromise('check/ftp', ['host', 'user', 'pass', 'folder']).then((pResult)=>{
-                let checkFTP = pResult.content;
+                let checkFTP = pResult?.content;
+
+                console.log(checkFTP);
 
                 let number_ftp = document.querySelector('.ftp.number');
 
-                c = checkFTP === null ? 'close':'done';
+                c = !checkFTP ? 'close':'done';
                 number_ftp.classList.remove('close', 'done');
                 number_ftp.classList.add(c);
                 number_ftp.innerHTML = '2<span class="material-symbols-outlined">'+c+'</span>';
 
                 startingModalActions.classList.toggle('loading');
-                if(checkFolder !== null && checkFTP !== null){
+                if(checkFolder && checkFTP){
                     document.querySelector('.file header h2').innerHTML = document.querySelector('input[name="local_folder"]').value+'<span>'+checkFolder.branch+'</span>';
                     startingModalActions.innerHTML = '';
                     fileSelectStep();
@@ -99,7 +101,7 @@
             project_files = pResult.content.files;
 
             let body = document.querySelector('.file.modal .body');
-            body.innerHTML = `<div class="form"><div class="search"><input type="search" name="search" placeholder="Filtrer"></div><div class="unversioned"><input type="checkbox" checked disabled name="unversioned" id="unversioned_files"/><label for="unversioned_files">Par date de modification locale</label></div></div>
+            body.innerHTML = `<div class="form"><div class="search"><input type="search" name="search" placeholder="Filtrer"></div><div class="unversioned loading"><input type="checkbox" checked disabled name="unversioned" id="unversioned_files"/><label for="unversioned_files">Par date de modification locale</label></div></div>
 <div class="list">
 </div>`;
 
@@ -129,32 +131,54 @@
 
             renderFiles();
 
-            getGitInfos();
+            getGitInfos().then((pFiles)=>{
+                document.querySelector('#unversioned_files').removeAttribute('disabled');
+                document.querySelector('.unversioned.loading')?.classList.remove('loading');
+                project_files = pFiles;
+                renderFiles();
+            });
         });
     }
 
+    let gitFiles;
     function getGitInfos(){
+        gitFiles = [];
         return new Promise(async (pResolve, pFail)=>{
-            let local_folder = document.querySelector('input[name="local_folder"]').value;
             let files = [];
             let t;
-            const maxCalls = Math.ceil(450 / GIT_CHECK_FILE_COUNT);
+            const fileCount = project_files.length;
+            const maxCalls = Math.ceil(fileCount / GIT_CHECK_FILE_COUNT);
             const maxPool = Math.ceil(maxCalls / GIT_CHECK_CONCURRENT_CALLS);
-            for(let p = 0; p<maxPool; p++){
+            let promises = [];
+            for(let p = 0; p<GIT_CHECK_CONCURRENT_CALLS; p++){
                 let f = [];
-                for(let c = 0; c<GIT_CHECK_CONCURRENT_CALLS; c++){
-
+                for(let c = 0; c<maxPool; c++){
+                    let idx = p + (c * GIT_CHECK_CONCURRENT_CALLS);
+                    f.push(project_files.slice(idx * GIT_CHECK_FILE_COUNT, Math.min((idx * GIT_CHECK_FILE_COUNT)+GIT_CHECK_FILE_COUNT, fileCount)));
                 }
+                promises.push(poolHandler(f));
                 files.push(f);
             }
-            /*for(let i = 0; i<1; i++){
-                let f = project_files.slice(i * GIT_CHECK_FILE_COUNT, (i * GIT_CHECK_FILE_COUNT)+GIT_CHECK_FILE_COUNT);
-                let final_files = await serverPromise('retrieve/updated-git-info', {files:f, local_folder:local_folder}).then((pContent)=>pContent.content.files);
-                files = files.concat(final_files);
-            }*/
-            console.log(files);
-            console.log(project_files.length);
-            pResolve(files);
+            Promise.all(promises).then((pResults)=>{
+                pResolve(gitFiles);
+            });
+        });
+    }
+
+    function poolHandler(pCallsParams){
+        let local_folder = document.querySelector('input[name="local_folder"]').value;
+        let params = pCallsParams.shift();
+        if(!params.length){
+            return true;
+        }
+        return serverPromise('retrieve/updated-git-info', {files:params, local_folder:local_folder}).then((pResult)=>{
+            if(pResult?.content?.files){
+                gitFiles = gitFiles.concat(pResult.content.files);
+            }
+            if(pCallsParams.length === 0){
+                return true;
+            }
+            return poolHandler(pCallsParams);
         });
     }
 
