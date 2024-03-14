@@ -1,5 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 
+includes/resources/envs.json
+
 *.tpl.php
 
 ### JetBrains template
