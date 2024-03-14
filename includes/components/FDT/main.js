@@ -144,7 +144,6 @@
     function getGitInfos(){
         gitFiles = [];
         return new Promise(async (pResolve, pFail)=>{
-            let files = [];
             let t;
             const fileCount = project_files.length;
             const maxCalls = Math.ceil(fileCount / GIT_CHECK_FILE_COUNT);
@@ -157,7 +156,6 @@
                     f.push(project_files.slice(idx * GIT_CHECK_FILE_COUNT, Math.min((idx * GIT_CHECK_FILE_COUNT)+GIT_CHECK_FILE_COUNT, fileCount)));
                 }
                 promises.push(poolHandler(f));
-                files.push(f);
             }
             Promise.all(promises).then((pResults)=>{
                 pResolve(gitFiles);

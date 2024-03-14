@@ -43,7 +43,7 @@ namespace core\utils
             $diff = 0;
             for($i = 0, $max = count($this->original); $i<$max; $i++){
                 $l = $this->original[$i];
-                $l2 = $this->new[$i + $diff];
+                $l2 = $this->new[$i + $diff]??"";
                 if(empty(trim($l))){
                     if(!empty(trim($l2)))
                         $diff -= 1;

@@ -1,7 +1,5 @@
 {if !$request_async}{include file="includes/head.tpl"}{/if}
 
-<div class="backdrop">
-</div>
 <div class="modal start hidden">
     <div class="steps">
         <div class="step">
