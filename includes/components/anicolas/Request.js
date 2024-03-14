@@ -69,7 +69,7 @@ class Request
         var params = [], value, name;
         for(let i in pObject)
         {
-            if(!pObject.hasOwnProperty(i))
+            if(!pObject.hasOwnProperty(i) || pObject[i] === null)
                 continue;
             name = i;
             if(pParent !== null)
@@ -82,6 +82,9 @@ class Request
                 default:
                     value = name+"="+pObject[i];
                     break;
+            }
+            if(!value.length){
+                continue;
             }
             params.push(value);
         }

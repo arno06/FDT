@@ -1,122 +1,164 @@
 (()=>{
 
-    const FILE_POOL_DATE_CHECK = 100;
+    const GIT_CHECK_FILE_COUNT = 50;
+
+    const GIT_CHECK_CONCURRENT_CALLS = 3;
 
     let project_files;
+    let environments = [];
 
     function init(){
-        document.querySelector('.start.modal').classList.remove('hidden');
+        if(window.envs){
+            setEnvironments(window.envs);
+        }
+        displayModal('start');
         document.querySelector('.go').addEventListener('click', startHandler);
-        document.querySelector('.comparison.modal header .button.return').addEventListener('click', backToSelection);
+        document.querySelector('.comparison.modal header .button.return').addEventListener('click', ()=>displayModal('file'));
     }
 
-    function backToSelection(){
-        let fileSelectionModal = document.querySelector('.file.modal');
-        let comparisonModal = document.querySelector('.comparison.modal');
-        fileSelectionModal.classList.remove('hidden');
-        comparisonModal.classList.add('hidden');
+    function setEnvironments(pEnvs){
+        environments = pEnvs;
+        if(!environments.length){
+            return;
+        }
+        let parent = document.createElement('div');
+        parent.classList.add('envs');
+        let select = document.createElement('select');
+        parent.appendChild(select);
+        document.querySelector('.modal.start').insertBefore(parent, document.querySelector('.modal.start .steps'));
+        let empty = document.createElement('option');
+        empty.value = "none";
+        select.appendChild(empty);
+        environments.forEach((pEnv, pIdx)=>{
+            let option = document.createElement('option');
+            option.value = pIdx;
+            option.innerHTML = pEnv.name;
+            select.appendChild(option);
+        });
+        select.addEventListener('change', (e)=>{
+            if(e.currentTarget.value === "none"){
+                return;
+            }
+            let env = environments[Number(e.currentTarget.value)];
+            if(!env){
+                return;
+            }
+            project_files = [];
+            document.querySelector('input[name="local_folder"]').value = env.local_folder;
+            document.querySelector('input[name="domain"]').value = env.domain;
+            document.querySelector('input[name="host"]').value = env.ftp.host;
+            document.querySelector('input[name="user"]').value = env.ftp.user;
+            document.querySelector('input[name="pass"]').value = env.ftp.pass;
+            document.querySelector('input[name="folder"]').value = env.ftp.folder;
+        });
     }
 
     function startHandler(e){
         let startingModalActions = document.querySelector('.start.modal .actions');
         startingModalActions.classList.toggle('loading');
 
-        Promise.all([checkLocalFolder(), checkFTP()]).then((pResults)=>{
-            startingModalActions.classList.toggle('loading');
-            let checkFolder = pResults[0].content;
-            let checkFTP = pResults[1].content;
+        serverPromise('check/local-folder', ['local_folder']).then((pResult)=>{
+            let checkFolder = pResult.content;
 
             let number_local = document.querySelector('.local_folder.number');
-            let number_ftp = document.querySelector('.ftp.number');
-
             let c = checkFolder === null ? 'close':'done';
             number_local.classList.remove('close', 'done');
             number_local.classList.add(c);
             number_local.innerHTML = '1<span class="material-symbols-outlined">'+c+'</span>';
 
-            c = checkFTP === null ? 'close':'done';
-            number_ftp.classList.remove('close', 'done');
-            number_ftp.classList.add(c);
-            number_ftp.innerHTML = '2<span class="material-symbols-outlined">'+c+'</span>';
+            serverPromise('check/ftp', ['host', 'user', 'pass', 'folder']).then((pResult)=>{
+                let checkFTP = pResult.content;
 
-            if(pResults.filter((pR)=>pR.content!==null)){
-                document.querySelector('.file header h2').innerHTML = document.querySelector('input[name="local_folder"]').value+'<span>'+checkFolder.branch+'</span>';
-                startingModalActions.innerHTML = '';
-                fileSelectStep();
-            }
+                let number_ftp = document.querySelector('.ftp.number');
+
+                c = checkFTP === null ? 'close':'done';
+                number_ftp.classList.remove('close', 'done');
+                number_ftp.classList.add(c);
+                number_ftp.innerHTML = '2<span class="material-symbols-outlined">'+c+'</span>';
+
+                startingModalActions.classList.toggle('loading');
+                if(checkFolder !== null && checkFTP !== null){
+                    document.querySelector('.file header h2').innerHTML = document.querySelector('input[name="local_folder"]').value+'<span>'+checkFolder.branch+'</span>';
+                    startingModalActions.innerHTML = '';
+                    fileSelectStep();
+                }
+            });
         });
     }
 
     function fileSelectStep(){
-        let fileSelectionModal = document.querySelector('.file.modal');
-        let startingModalActions = document.querySelector('.start.modal .actions');
         setTimeout(()=>{
-            startingModalActions.parentNode.classList.add('hidden');
-            fileSelectionModal.classList.toggle('hidden');
+            displayModal('file');
             listFileHandler();
         }, 500);
     }
 
     function listFileHandler(){
-        let local_folder = document.querySelector('input[name="local_folder"]').value;
         serverPromise('list/local-files', ['local_folder']).then(async (pResult)=>{
-            let dummy = {value:0};
-            let files = [];
-            let t;
-            const max = Math.ceil(pResult.content.files.length / FILE_POOL_DATE_CHECK);
-            for(let i = 0; i<max; i++){
-                let f = pResult.content.files.slice(i * FILE_POOL_DATE_CHECK, (i * FILE_POOL_DATE_CHECK)+FILE_POOL_DATE_CHECK);
-                let final_files = await serverPromise('retrieve/updated-git-info', {files:f, local_folder:local_folder}).then((pContent)=>pContent.content.files);
-                files = files.concat(final_files);
 
-                let toVal = Math.round((files.length/pResult.content.files.length) * 100);
-                t = M4Tween.from(dummy.value).to(toVal).start(3).onUpdate((pVal)=>{
-                    dummy.value = Math.round(pVal.value);
-                    document.querySelector('.loading_message span').innerHTML = dummy.value.toString();
-                });
-            }
-            t.onComplete(()=>{
-                project_files = files;
-                let body = document.querySelector('.file.modal .body');
-                body.innerHTML = `<div class="form"><div class="search"><input type="search" name="search" placeholder="Filtrer"></div><div class="unversioned"><input type="checkbox" name="unversioned" id="unversioned_files"/><label for="unversioned_files">Par date de modification locale</label></div></div>
+            project_files = pResult.content.files;
+
+            let body = document.querySelector('.file.modal .body');
+            body.innerHTML = `<div class="form"><div class="search"><input type="search" name="search" placeholder="Filtrer"></div><div class="unversioned"><input type="checkbox" checked disabled name="unversioned" id="unversioned_files"/><label for="unversioned_files">Par date de modification locale</label></div></div>
 <div class="list">
 </div>`;
 
-                document.querySelector('#unversioned_files').addEventListener('change', (e)=>{
-                    refreshFiles();
-                });
+            document.querySelector('#unversioned_files').addEventListener('change', (e)=>renderFiles());
 
-                let to = null;
-                const changeSearchHandler = (e)=>{
-                    if(to){
-                        clearTimeout(to);
-                    }
-                    let value = e.currentTarget.value;
-                    to = setTimeout(refreshFiles, 100);
-                };
-                document.querySelector('input[name="search"]').addEventListener('change', changeSearchHandler);
-                document.querySelector('input[name="search"]').addEventListener('keyup', changeSearchHandler);
+            let to = null;
+            const changeSearchHandler = (e)=>{
+                if(to){
+                    clearTimeout(to);
+                }
+                let value = e.currentTarget.value;
+                to = setTimeout(renderFiles, 100);
+            };
+            document.querySelector('input[name="search"]').addEventListener('change', changeSearchHandler);
+            document.querySelector('input[name="search"]').addEventListener('keyup', changeSearchHandler);
 
-                document.querySelector('.modal.file header .button').addEventListener('click', (e)=>{
-                    let selectedFiles = Array.from(document.querySelectorAll('.modal.file .list input[type="checkbox"]:checked')).map((pInput)=>pInput.value);
+            document.querySelector('.modal.file header .button').addEventListener('click', (e)=>{
+                let selectedFiles = Array.from(document.querySelectorAll('.modal.file .list input[type="checkbox"]:checked')).map((pInput)=>pInput.value);
 
-                    if(!selectedFiles.length){
-                        return;
-                    }
+                if(!selectedFiles.length){
+                    return;
+                }
 
-                    let fileSelectionModal = document.querySelector('.file.modal');
-                    let comparisonModal = document.querySelector('.comparison.modal');
-                    fileSelectionModal.classList.add('hidden');
-                    comparisonModal.classList.toggle('hidden');
-                    retrieveFileComparison(selectedFiles);
-                });
-
-                refreshFiles();
+                displayModal('comparison');
+                retrieveFileComparison(selectedFiles);
             });
+
+            renderFiles();
+
+            getGitInfos();
         });
     }
 
-    function refreshFiles(){
+    function getGitInfos(){
+        return new Promise(async (pResolve, pFail)=>{
+            let local_folder = document.querySelector('input[name="local_folder"]').value;
+            let files = [];
+            let t;
+            const maxCalls = Math.ceil(450 / GIT_CHECK_FILE_COUNT);
+            const maxPool = Math.ceil(maxCalls / GIT_CHECK_CONCURRENT_CALLS);
+            for(let p = 0; p<maxPool; p++){
+                let f = [];
+                for(let c = 0; c<GIT_CHECK_CONCURRENT_CALLS; c++){
+
+                }
+                files.push(f);
+            }
+            /*for(let i = 0; i<1; i++){
+                let f = project_files.slice(i * GIT_CHECK_FILE_COUNT, (i * GIT_CHECK_FILE_COUNT)+GIT_CHECK_FILE_COUNT);
+                let final_files = await serverPromise('retrieve/updated-git-info', {files:f, local_folder:local_folder}).then((pContent)=>pContent.content.files);
+                files = files.concat(final_files);
+            }*/
+            console.log(files);
+            console.log(project_files.length);
+            pResolve(files);
+        });
+    }
+
+    function renderFiles(){
         let body = document.querySelector('.file.modal .body');
 
         let perDays = [];
@@ -189,8 +231,7 @@
     }
 
     function deployHandler(){
-        document.querySelector('.modal.comparison').classList.add('hidden');
-        document.querySelector('.modal.upload').classList.remove('hidden');
+        displayModal('upload');
         let files = Array.from(document.querySelectorAll('.modal.comparison .upload input[type="checkbox"]:checked')).map((pInput)=>pInput.value);
         let params = extractParams(['local_folder', 'host', 'user', 'pass', 'folder', 'domain']);
         params.files = files;
@@ -238,14 +279,6 @@
         });
     }
 
-    function checkLocalFolder(){
-        return serverPromise('check/local-folder', ['local_folder']);
-    }
-
-    function checkFTP(){
-        return serverPromise('check/ftp', ['host', 'user', 'pass', 'folder']);
-    }
-
     function serverPromise(pUrl, pParams){
         return new Promise((pResolve, pError)=>{
             Request.load(pUrl, extractParams(pParams)).onComplete((e)=>{
@@ -256,6 +289,11 @@
                 pResolve(e.currentTarget.responseJSON);
             });
         });
+    }
+
+    function displayModal(pModal){
+        document.querySelector('.modal:not(.hidden)')?.classList.add('hidden');
+        document.querySelector('.modal.'+pModal).classList.remove('hidden');
     }
 
     function extractParams(pParamsName){

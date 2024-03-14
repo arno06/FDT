@@ -68,5 +68,9 @@
         </div>
     </div>
 </div>
-
+{if $content.envs}
+    <script>
+        window.envs = {$content.envs};
+    </script>
+{/if}
 {if !$request_async}{include file="includes/footer.tpl"}{/if}

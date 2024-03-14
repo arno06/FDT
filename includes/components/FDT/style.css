@@ -28,7 +28,9 @@ input[type="password"]:focus{border-bottom-color:#3B444E;}
 .modal{max-height:750px;height:700px;box-sizing:border-box;transition:all .3s;position:absolute;left:50%;top:50%;transform:translate(-50%, -50%);background:#fff;padding:1em;box-shadow: 0 1px 3px rgba(0, 0, 0, .3);}
 .modal.hidden{opacity: 0;pointer-events: none;margin-top:50px;}
 
-.modal.start{height:250px;}
+.modal.start{height:270px;}
+
+.modal.start div.envs{display:flex;justify-content: center;}
 
 .modal .steps{display:flex;gap:1em;}
 .modal .steps .step{width:400px;display:flex;flex-direction: column;align-items: center;gap:1em;}

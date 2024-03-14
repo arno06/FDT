@@ -12,10 +12,10 @@ namespace app\main\controllers\front
 
         public function __construct()
         {
-
         }
 
         public function index(){
+            $this->addContent('envs', File::read('includes/resources/envs.json'));
             Autoload::addComponent('FDT');
         }
 
