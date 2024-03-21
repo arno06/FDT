@@ -11,9 +11,9 @@
         if(window.envs){
             setEnvironments(window.envs);
         }
-        displayModal('start');
+        displayModal('project');
         document.querySelector('.go').addEventListener('click', startHandler);
-        document.querySelector('.comparison.modal header .button.return').addEventListener('click', ()=>displayModal('file'));
+        document.querySelector('.comparison.modal header .button.return').addEventListener('click', ()=>displayModal('selection'));
     }
 
     function setEnvironments(pEnvs){
@@ -25,7 +25,7 @@
         parent.classList.add('envs');
         let select = document.createElement('select');
         parent.appendChild(select);
-        document.querySelector('.modal.start').insertBefore(parent, document.querySelector('.modal.start .steps'));
+        document.querySelector('.modal.project').insertBefore(parent, document.querySelector('.modal.project .steps'));
         let empty = document.createElement('option');
         empty.value = "none";
         select.appendChild(empty);
@@ -54,7 +54,7 @@
     }
 
     function startHandler(e){
-        let startingModalActions = document.querySelector('.start.modal .actions');
+        let startingModalActions = document.querySelector('.modal.project .actions');
         startingModalActions.classList.toggle('loading');
 
         serverPromise('check/local-folder', ['local_folder']).then((pResult)=>{
@@ -80,7 +80,7 @@
 
                 startingModalActions.classList.toggle('loading');
                 if(checkFolder && checkFTP){
-                    document.querySelector('.file header h2').innerHTML = document.querySelector('input[name="local_folder"]').value+'<span>'+checkFolder.branch+'</span>';
+                    document.querySelector('.modal.selection header h2').innerHTML = document.querySelector('input[name="local_folder"]').value+'<span>'+checkFolder.branch+'</span>';
                     startingModalActions.innerHTML = '';
                     fileSelectStep();
                 }
@@ -90,7 +90,7 @@
 
     function fileSelectStep(){
         setTimeout(()=>{
-            displayModal('file');
+            displayModal('selection');
             listFileHandler();
         }, 500);
     }
@@ -100,7 +100,7 @@
 
             project_files = pResult.content.files;
 
-            let body = document.querySelector('.file.modal .body');
+            let body = document.querySelector('.modal.selection .body');
             body.innerHTML = `<div class="form"><div class="search"><input type="search" name="search" placeholder="Filtrer"></div><div class="unversioned loading"><input type="checkbox" checked disabled name="unversioned" id="unversioned_files"/><label for="unversioned_files">Par date de modification locale</label></div></div>
 <div class="list">
 </div>`;
@@ -118,8 +118,8 @@
             document.querySelector('input[name="search"]').addEventListener('change', changeSearchHandler);
             document.querySelector('input[name="search"]').addEventListener('keyup', changeSearchHandler);
 
-            document.querySelector('.modal.file header .button').addEventListener('click', (e)=>{
-                let selectedFiles = Array.from(document.querySelectorAll('.modal.file .list input[type="checkbox"]:checked')).map((pInput)=>pInput.value);
+            document.querySelector('.modal.selection header .button').addEventListener('click', (e)=>{
+                let selectedFiles = Array.from(document.querySelectorAll('.modal.selection .list input[type="checkbox"]:checked')).map((pInput)=>pInput.value);
 
                 if(!selectedFiles.length){
                     return;
@@ -181,7 +181,7 @@
     }
 
     function renderFiles(){
-        let body = document.querySelector('.file.modal .body');
+        let body = document.querySelector('.modal.selection .body');
 
         let perDays = [];
         let lastDate = null;
@@ -234,7 +234,7 @@
             return pFile;
         });
 
-        document.querySelector('.file.modal .body .list').innerHTML = perDays.reduce((pHTML, pFiles)=>{
+        document.querySelector('.modal.selection .body .list').innerHTML = perDays.reduce((pHTML, pFiles)=>{
             return pHTML + '<div class="sublist"><div class="title">'+pFiles[0].dateString+'</div>'+pFiles.reduce((pHTMLList, pFile)=>{
                 let id = pFile.filename.replace(/(\.|\/)/g, '_');
                 return pHTMLList + '<div class="day"><div><input id="'+id+'" type="checkbox" value="'+pFile.filename+'"></div><label for="'+id+'" class="name" title="'+pFile.filename+'">'+pFile.file+'</label><div class="hours">'+pFile.hourString+'</div></div>';
@@ -253,7 +253,7 @@
     }
 
     function deployHandler(){
-        displayModal('upload');
+        displayModal('deployment');
         let files = Array.from(document.querySelectorAll('.modal.comparison .upload input[type="checkbox"]:checked')).map((pInput)=>pInput.value);
         let params = extractParams(['local_folder', 'host', 'user', 'pass', 'folder', 'domain']);
         params.files = files;
@@ -268,7 +268,7 @@
                     if(!actions.hasOwnProperty(j)){
                         continue;
                     }
-                    document.querySelector('.modal.upload .body .steps .'+i).classList[j](actions[j]);
+                    document.querySelector('.modal.deployment .body .steps .'+i).classList[j](actions[j]);
                 }
             }
         };
@@ -316,6 +316,8 @@
     function displayModal(pModal){
         document.querySelector('.modal:not(.hidden)')?.classList.add('hidden');
         document.querySelector('.modal.'+pModal).classList.remove('hidden');
+        document.querySelector('.breadcrumb li.current')?.classList.remove('current');
+        document.querySelector('.breadcrumb li[rel="'+pModal+'"]')?.classList.add('current');
     }
 
     function extractParams(pParamsName){

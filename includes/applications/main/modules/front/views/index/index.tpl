@@ -1,6 +1,14 @@
 {if !$request_async}{include file="includes/head.tpl"}{/if}
-
-<div class="modal start hidden">
+<ul class="breadcrumb">
+   <li rel="project" class="current">Projet</li>
+    <li><span class="material-symbols-outlined">chevron_right</span></li>
+   <li rel="selection">Sélection</li>
+    <li><span class="material-symbols-outlined">chevron_right</span></li>
+   <li rel="comparison">Comparaison</li>
+    <li><span class="material-symbols-outlined">chevron_right</span></li>
+   <li rel="deployment">Déploiement</li>
+</ul>
+<div class="modal project hidden">
     <div class="steps">
         <div class="step">
             <span class="number local_folder">1</span>
@@ -9,10 +17,10 @@
                 <div class="button">
                     <label for="file_select" class="material-symbols-outlined">folder_open</label>
                     <input type="file" id="file_select" name="file_select"/>
-                    <input name="local_folder" placeholder="Dossier" type="text" autocomplete="off" value="{$content.local_folder}">
+                    <input name="local_folder" placeholder="Dossier" type="text" autocomplete="off">
                 </div>
                 <div class="domain">
-                    <input name="domain" placeholder="https://..." type="text" autocomplete="off" value="{$content.domain}">
+                    <input name="domain" placeholder="https://..." type="text" autocomplete="off">
                 </div>
             </div>
         </div>
@@ -20,10 +28,10 @@
             <span class="number ftp">2</span>
             <label>Serveur FTP</label>
             <div class="form">
-                <input name="host" placeholder="Host" type="text" autocomplete="off" value="{$content.ftp.host}">
-                <input name="folder" placeholder="Dossier distant" type="text" autocomplete="off" value="{$content.ftp.folder}">
-                <input name="user" placeholder="User" type="text" autocomplete="off" value="{$content.ftp.user}">
-                <input name="pass" placeholder="Password" type="password" autocomplete="off" value="{$content.ftp.pass}">
+                <input name="host" placeholder="Host" type="text" autocomplete="off">
+                <input name="folder" placeholder="Dossier distant" type="text" autocomplete="off">
+                <input name="user" placeholder="User" type="text" autocomplete="off">
+                <input name="pass" placeholder="Password" type="password" autocomplete="off">
             </div>
         </div>
     </div>
@@ -35,7 +43,7 @@
     </div>
 </div>
 
-<div class="modal file hidden">
+<div class="modal selection hidden">
     <header><h2>../vidal-fr<span>master</span></h2> <span class="button"><span class="material-symbols-outlined">check</span>Valider la sélection</span></header>
     <div class="body">
         <div class="loading_message">
@@ -48,14 +56,14 @@
 <div class="modal comparison hidden">
     <header>
         <span class="button return"><span class="material-symbols-outlined">arrow_back_ios</span>Retour à la sélection</span>
-        <span class="button upload_action"><span class="material-symbols-outlined">cloud_upload</span>Uploader</span>
+        <span class="button upload_action"><span class="material-symbols-outlined">cloud_upload</span>Déployer</span>
     </header>
     <div class="body">
 
     </div>
 </div>
 
-<div class="modal upload hidden">
+<div class="modal deployment hidden">
     <div class="body">
         <div class="loading_message">
             <div class="steps">

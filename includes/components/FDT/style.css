@@ -24,12 +24,16 @@ input[type="text"]:focus,
 input[type="search"]:focus,
 input[type="password"]:focus{border-bottom-color:#3B444E;}
 
+.breadcrumb{display:flex;background:#fff;padding:1em;list-style: none;margin:0;gap:1em;align-items: center;justify-content: center;font-size:0.7em;color:#999;}
+.breadcrumb li{padding:0;margin:0;}
+.breadcrumb li.current{color:#000;font-weight:500;}
+
 .modal{max-height:750px;height:100%;box-sizing:border-box;transition:all .3s;position:absolute;left:50%;top:50%;transform:translate(-50%, -50%);background:#fff;padding:1em;box-shadow: 0 1px 3px rgba(0, 0, 0, .3);display:flex;flex-direction: column;overflow: hidden;}
 .modal.hidden{opacity: 0;pointer-events: none;margin-top:50px;}
 
-.modal.start{height:270px;}
+.modal.project{height:270px;}
 
-.modal.start div.envs{display:flex;justify-content: center;}
+.modal.project div.envs{display:flex;justify-content: center;}
 
 .modal .steps{display:flex;gap:1em;}
 .modal .steps .step{width:400px;display:flex;flex-direction: column;align-items: center;gap:1em;}
@@ -60,7 +64,7 @@ input[name="file_select"]{display:none;}
 .modal .actions.loading{background:url("imgs/Loading.gif") no-repeat center center;background-size:32px 32px;}
 .modal .actions.loading .go{transform:translateY(-40px);opacity: 0;pointer-events: none;}
 
-.modal.file{width:800px;}
+.modal.selection{width:800px;}
 .modal header{display:flex;justify-content: space-between;align-items:center;flex: 0 0 auto;}
 .modal header h2{margin:0;padding:0;font-size:1.2em;display:flex;gap:.5em;align-items: center;}
 .modal header h2 span{font-size:0.8em;display:block;background:#eaeaea;padding:2px 5px;}
@@ -68,19 +72,19 @@ input[name="file_select"]{display:none;}
 
 .modal .body{flex:1 1 auto;display:flex;flex-direction: column;overflow:hidden;}
 .modal .body .loading_message{display:flex;flex-direction:column;align-items: center;justify-content: center;height:600px;}
-.file .body .form{display:flex;justify-content: space-between;align-items: center;padding:1em;}
-.file .body .form label{font-size:0.9em;}
-.file .body .form .unversioned{}
-.file .body .form .unversioned.loading{padding-left:30px;background:url("imgs/Loading.gif") no-repeat left center;background-size: contain;}
+.modal.selection .body .form{display:flex;justify-content: space-between;align-items: center;padding:1em;}
+.modal.selection .body .form label{font-size:0.9em;}
+.modal.selection .body .form .unversioned{}
+.modal.selection .body .form .unversioned.loading{padding-left:30px;background:url("imgs/Loading.gif") no-repeat left center;background-size: contain;}
 .modal .body .list{flex:1 1 auto;overflow: auto;}
 .modal .body .list .sublist{padding-bottom:.5em;}
 .modal .body .list .sublist{}
 .modal .body .list .sublist .title{position:sticky;top:0;padding:10px 15px;font-size:0.9em;background: #dcebfd;font-weight: 400;}
-.file .body .list .sublist .day{display:flex;align-items: center;padding:5px;gap:5px;}
-.file .body .list .sublist .day:hover{background:#fafafa;}
-.file .body .list .sublist .day div.checkbox{flex: 0 0 auto;height:30px;width:30px;}
-.file .body .list .sublist .day label.name{flex: 1 1 auto;font-size:.9em;cursor:pointer;}
-.file .body .list .sublist .day div.hours{flex: 0 0 auto;width:60px;display:flex;justify-content: center;font-size:0.7em;color:#999;}
+.modal.selection .body .list .sublist .day{display:flex;align-items: center;padding:5px;gap:5px;}
+.modal.selection .body .list .sublist .day:hover{background:#fafafa;}
+.modal.selection .body .list .sublist .day div.checkbox{flex: 0 0 auto;height:30px;width:30px;}
+.modal.selection .body .list .sublist .day label.name{flex: 1 1 auto;font-size:.9em;cursor:pointer;}
+.modal.selection .body .list .sublist .day div.hours{flex: 0 0 auto;width:60px;display:flex;justify-content: center;font-size:0.7em;color:#999;}
 
 .modal.comparison{width:1200px;}
 
@@ -95,21 +99,25 @@ input[name="file_select"]{display:none;}
 .comparisons .file{width:calc(50% - .5em);overflow:auto;border-left:solid #eaeaea 1px;}
 .comparisons .file .hidden_lines{width:100%;height:20px;background: #eef4fc;}
 .comparisons .file .line{display:flex;align-items: center;}
-.comparisons .file .line .number{width:40px;flex:0 0 auto;font-size:0.7em;text-align: center;color:#666;}
+.comparisons .file .line .number{user-select:none;width:40px;flex:0 0 auto;font-size:0.7em;text-align: center;color:#666;}
 .comparisons .file .line .data{flex:1 1 auto;margin:0;font-size:0.9em;border-left:1px solid #eaeaea;padding-left:5px;}
 
-.modal.upload{width:800px;}
-.modal.upload .body .loading_message .steps{flex-direction: column;}
-.modal.upload .body .loading_message .steps>div{display:flex;align-items: center;gap:1em;}
-.modal.upload .body .loading_message .steps>div>span{display:none;}
-.modal.upload .body .loading_message .steps>div.done{color:#27ae60;}
-.modal.upload .body .loading_message .steps>div.done span.done{display:block;}
-.modal.upload .body .loading_message .steps>div.error{color:#C1392D;}
-.modal.upload .body .loading_message .steps>div.error span.error{display:block;}
-.modal.upload .body .loading_message .steps>div.current{color:#444;}
-.modal.upload .body .loading_message .steps>div.waiting{color:#9FA7B4}
-.modal.upload .body .loading_message .steps>div.waiting span.current,
-.modal.upload .body .loading_message .steps>div.current span.current{display:block;}
+.modal.deployment{width:800px;}
+.modal.deployment .body .loading_message .steps{flex-direction: column;}
+.modal.deployment .body .loading_message .steps>div{display:flex;align-items: center;gap:1em;}
+.modal.deployment .body .loading_message .steps>div>span{display:none;}
+.modal.deployment .body .loading_message .steps>div.done{color:#27ae60;}
+.modal.deployment .body .loading_message .steps>div.done span.done{display:block;}
+.modal.deployment .body .loading_message .steps>div.error{color:#C1392D;}
+.modal.deployment .body .loading_message .steps>div.error span.error{display:block;}
+.modal.deployment .body .loading_message .steps>div.current{color:#444;}
+.modal.deployment .body .loading_message .steps>div.waiting{color:#9FA7B4}
+.modal.deployment .body .loading_message .steps>div.waiting span.current,
+.modal.deployment .body .loading_message .steps>div.current span.current{display:block;}
 
 div.deleted{background:rgba(255, 0, 0, .2);}
 div.added{background:rgba(0, 255, 0, .2);}
+
+@media screen and (max-height: 750px){
+    .breadcrumb{justify-content: start}
+}
