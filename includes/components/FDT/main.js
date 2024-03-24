@@ -14,6 +14,14 @@
         displayModal('project');
         document.querySelector('.go').addEventListener('click', startHandler);
         document.querySelector('.comparison.modal header .button.return').addEventListener('click', ()=>displayModal('selection'));
+        document.querySelectorAll('.breadcrumb li').forEach((pElement)=>{
+            pElement.addEventListener('click', (e)=>{
+                if(!e.currentTarget.getAttribute("rel")){
+                    return;
+                }
+                displayModal(e.currentTarget.getAttribute("rel"));
+            });
+        });
     }
 
     function setEnvironments(pEnvs){
