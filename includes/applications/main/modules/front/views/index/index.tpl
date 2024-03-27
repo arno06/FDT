@@ -44,7 +44,7 @@
 </div>
 
 <div class="modal selection hidden">
-    <header><h2>../vidal-fr<span>master</span></h2> <span class="button"><span class="material-symbols-outlined">check</span>Valider la sélection</span></header>
+    <header><h2>../vidal-fr<span>master</span></h2> <span class="button"><span class="material-symbols-outlined">check</span>Valider la sélection<span class="count"></span></span></header>
     <div class="body">
         <div class="loading_message">
             <div>Chargement</div>

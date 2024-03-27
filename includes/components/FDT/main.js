@@ -1,4 +1,5 @@
 (()=>{
+    const checkGitStatus = true;
 
     const GIT_CHECK_FILE_COUNT = 125;
 
@@ -6,6 +7,7 @@
 
     let project_files;
     let environments = [];
+    let selected_files = [];
 
     function init(){
         if(window.envs){
@@ -61,7 +63,7 @@
         });
     }
 
-    function startHandler(e){
+    function startHandler(){
         let startingModalActions = document.querySelector('.modal.project .actions');
         startingModalActions.classList.toggle('loading');
 
@@ -109,39 +111,38 @@
             project_files = pResult.content.files;
 
             let body = document.querySelector('.modal.selection .body');
-            body.innerHTML = `<div class="form"><div class="search"><input type="search" name="search" placeholder="Filtrer"></div><div class="unversioned loading"><input type="checkbox" checked disabled name="unversioned" id="unversioned_files"/><label for="unversioned_files">Par date de modification locale</label></div></div>
+            body.innerHTML = `<div class="form"><div class="search"><input type="search" name="search" placeholder="Filtrer" autocomplete="off" spellcheck="false"></div><div class="unversioned"><input type="checkbox" checked disabled name="unversioned" id="unversioned_files"/><label for="unversioned_files">Par date de modification locale</label></div></div>
 <div class="list">
 </div>`;
 
-            document.querySelector('#unversioned_files').addEventListener('change', (e)=>renderFiles());
+            document.querySelector('#unversioned_files').addEventListener('change', ()=>renderFiles());
 
             let to = null;
-            const changeSearchHandler = (e)=>{
+            const changeSearchHandler = ()=>{
                 if(to){
                     clearTimeout(to);
                 }
-                let value = e.currentTarget.value;
                 to = setTimeout(renderFiles, 100);
             };
             document.querySelector('input[name="search"]').addEventListener('change', changeSearchHandler);
+            document.querySelector('input[name="search"]').addEventListener('search', changeSearchHandler);
             document.querySelector('input[name="search"]').addEventListener('keyup', changeSearchHandler);
 
-            document.querySelector('.modal.selection header .button').addEventListener('click', (e)=>{
-                let selectedFiles = Array.from(document.querySelectorAll('.modal.selection .list input[type="checkbox"]:checked')).map((pInput)=>pInput.value);
-
-                if(!selectedFiles.length){
+            document.querySelector('.modal.selection header .button').addEventListener('click', ()=>{
+                if(!selected_files.length){
                     return;
                 }
 
                 displayModal('comparison');
-                retrieveFileComparison(selectedFiles);
+                retrieveFileComparison(selected_files);
             });
 
             renderFiles();
 
+            if(!checkGitStatus){
+                return;
+            }
             getGitInfos().then((pFiles)=>{
-                document.querySelector('#unversioned_files').removeAttribute('disabled');
-                document.querySelector('.unversioned.loading')?.classList.remove('loading');
                 project_files = pFiles;
                 renderFiles();
             });
@@ -150,9 +151,9 @@
 
     let gitFiles;
     function getGitInfos(){
+        document.querySelector('.unversioned')?.classList.add('loading');
         gitFiles = [];
-        return new Promise(async (pResolve, pFail)=>{
-            let t;
+        return new Promise(async (pResolve)=>{
             const fileCount = project_files.length;
             const maxCalls = Math.ceil(fileCount / GIT_CHECK_FILE_COUNT);
             const maxPool = Math.ceil(maxCalls / GIT_CHECK_CONCURRENT_CALLS);
@@ -165,7 +166,9 @@
                 }
                 promises.push(poolHandler(f));
             }
-            Promise.all(promises).then((pResults)=>{
+            Promise.all(promises).then(()=>{
+                document.querySelector('#unversioned_files').removeAttribute('disabled');
+                document.querySelector('.unversioned.loading')?.classList.remove('loading');
                 pResolve(gitFiles);
             });
         });
@@ -199,7 +202,7 @@
 
         let propTS = unversionedFiles?'last_m_time':'timestamp';
 
-        let versionedFiles = project_files.filter((pFile)=>{
+        project_files.filter((pFile)=>{
 
             if (filteredSearch !== false && pFile.filename.indexOf(filteredSearch) === -1){
                 return false;
@@ -242,12 +245,23 @@
             return pFile;
         });
 
-        document.querySelector('.modal.selection .body .list').innerHTML = perDays.reduce((pHTML, pFiles)=>{
+        body.querySelector('.list').innerHTML = perDays.reduce((pHTML, pFiles)=>{
             return pHTML + '<div class="sublist"><div class="title">'+pFiles[0].dateString+'</div>'+pFiles.reduce((pHTMLList, pFile)=>{
-                let id = pFile.filename.replace(/(\.|\/)/g, '_');
-                return pHTMLList + '<div class="day"><div><input id="'+id+'" type="checkbox" value="'+pFile.filename+'"></div><label for="'+id+'" class="name" title="'+pFile.filename+'">'+pFile.file+'</label><div class="hours">'+pFile.hourString+'</div></div>';
+                let id = pFile.filename.replace(/([.\/])/g, '_');
+                return pHTMLList + '<div class="day"><div><input id="'+id+'" type="checkbox" value="'+pFile.filename+'"'+(selected_files.includes(pFile.filename)?' checked':'')+'></div><label for="'+id+'" class="name" title="'+pFile.filename+'">'+pFile.file+'</label><div class="hours">'+pFile.hourString+'</div></div>';
             }, "")+'</div>';
         }, "");
+
+        body.querySelectorAll('.list .sublist input[type="checkbox"]').forEach((pInput)=>{
+            pInput.addEventListener('change', (e)=>{
+                if(e.currentTarget.checked){
+                    selected_files.push(e.currentTarget.value);
+                }else{
+                    selected_files = selected_files.filter((pVal)=>pVal !== e.currentTarget.value);
+                }
+                document.querySelector('.modal.selection header .button .count').innerHTML = '('+selected_files.length+')';
+            });
+        });
     }
 
     function retrieveFileComparison(pSelectedFiles){
@@ -261,8 +275,14 @@
     }
 
     function deployHandler(){
-        displayModal('deployment');
         let files = Array.from(document.querySelectorAll('.modal.comparison .upload input[type="checkbox"]:checked')).map((pInput)=>pInput.value);
+
+        if(!files.length){
+            return;
+        }
+
+        displayModal('deployment');
+
         let params = extractParams(['local_folder', 'host', 'user', 'pass', 'folder', 'domain']);
         params.files = files;
 
@@ -310,7 +330,7 @@
     }
 
     function serverPromise(pUrl, pParams){
-        return new Promise((pResolve, pError)=>{
+        return new Promise((pResolve)=>{
             Request.load(pUrl, extractParams(pParams)).onComplete((e)=>{
                 if(!e.currentTarget.responseJSON || e.currentTarget.responseJSON.content.error){
                     pResolve(null);

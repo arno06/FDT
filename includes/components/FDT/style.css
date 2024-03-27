@@ -83,7 +83,7 @@ input[name="file_select"]{display:none;}
 .modal.selection .body .list .sublist .day{display:flex;align-items: center;padding:5px;gap:5px;}
 .modal.selection .body .list .sublist .day:hover{background:#fafafa;}
 .modal.selection .body .list .sublist .day div.checkbox{flex: 0 0 auto;height:30px;width:30px;}
-.modal.selection .body .list .sublist .day label.name{flex: 1 1 auto;font-size:.9em;cursor:pointer;}
+.modal.selection .body .list .sublist .day label.name{flex: 1 1 auto;font-size:.9em;cursor:pointer;user-select: none;}
 .modal.selection .body .list .sublist .day div.hours{flex: 0 0 auto;width:60px;display:flex;justify-content: center;font-size:0.7em;color:#999;}
 
 .modal.comparison{width:1200px;}
