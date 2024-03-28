@@ -20,7 +20,7 @@ namespace core\utils
 
     class DiffResult
     {
-        const DEBUG = false;
+        const DEBUG = true;
 
         public $original;
 
@@ -44,7 +44,7 @@ namespace core\utils
             if(!self::DEBUG){
                 return;
             }
-            trace($pMessage);
+            trace_r($pMessage);
         }
 
         private function compare(){
@@ -55,12 +55,12 @@ namespace core\utils
                 if(empty(trim($l))){
                     if(!empty(trim($l2)))
                         $diff -= 1;
-                    $this->_trace("ignoring empty string");
+                    //$this->_trace("ignoring empty string");
                     continue;
                 }
                 $this->_trace($i." checking ".$l." vs ".($i+$diff)." ".$l2);
                 if(trim($l) === trim($l2)){
-                    $this->_trace(" equal ");
+                    //$this->_trace(" equal ");
                     continue;
                 }
                 $this->_trace("  else deletion ");
@@ -68,19 +68,36 @@ namespace core\utils
                     $l2 = $this->new[$k];
                     if(trim($l) == trim($l2)){
                         $this->_trace(" found further on ".$k." ".$l2." ".$diff);
+                        $this->_trace(' adding between '.($k-(1)).' && '.(($k-(1))+($k - ($i+$diff))));
                         for($j = 0, $maxj = $k - ($i+$diff); $j<$maxj; $j++){
                             $this->additions[] = array('content'=>$this->new[$k-($j+1)], 'index'=>$k-($j+1), 'precision'=>'alreadyin');
                             $diff += 1;
+                            $this->_trace("  added ".($k-($j+1))." ".$this->new[$k-($j+1)]);
                         }
                         $this->_trace(" after additions ".$diff);
                         continue 2;
                     }
                 }
-                foreach($this->additions as $index=>$addition){
+                foreach($this->additions as $addition){
                     if(trim($addition['content']) === trim($l)){
-                        $diff = $addition['index'] - $i;
+                        $d = $addition['index'] - $i;
+                        if(abs($d)>10){
+                            $this->_trace(' diff '.$diff);
+                            continue;
+                        }
+                        $diff = $d;
                         $this->_trace(" found in additions ".$addition['content']." new diff ".$diff);
-                        unset($this->additions[$index]);
+                        $this->_trace($addition);
+                        $refIndex = $addition['index'];
+                        $additions = [];
+                        foreach($this->additions as $idx=>$add){
+                            if($add['index']<$refIndex){
+                                $additions[] = $add;
+                            }
+                            $this->_trace('not added '.$add['content']);
+                        }
+                        $this->additions = $additions;
+                        $this->_trace($this->additions);
                         continue 2;
                     }
                 }
