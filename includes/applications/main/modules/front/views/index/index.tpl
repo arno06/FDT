@@ -22,6 +22,9 @@
                 <div class="domain">
                     <input name="domain" placeholder="https://..." type="text" autocomplete="off">
                 </div>
+                <div class="checkgit">
+                    <input name="checkgit" type="checkbox" id="checkgit"><label for="checkgit">Vérifier la date de MAJ Git</label>
+                </div>
             </div>
         </div>
         <div class="step">
@@ -47,8 +50,7 @@
     <header><h2>../vidal-fr<span>master</span></h2> <span class="button"><span class="material-symbols-outlined">check</span>Valider la sélection<span class="count"></span></span></header>
     <div class="body">
         <div class="loading_message">
-            <div>Chargement</div>
-            <div><span>0</span> %</div>
+            <div>Chargement des fichiers</div>
         </div>
     </div>
 </div>

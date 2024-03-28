@@ -67,7 +67,11 @@ namespace app\main\controllers\front
             $function_calls = [];
             foreach($files as $idx=>$file) {
                 $filePath = str_replace($local_folder . '/', '', $file);
-                if(!preg_match('/\.php$/', $filePath, $matches)){
+                if(preg_match('/\.tpl$/i', $filePath, $matches)){
+                    $function_calls = ['opcache_reset();'];
+                    break;
+                }
+                if(!preg_match('/\.php$/i', $filePath, $matches)){
                     continue;
                 }
                 $function_calls[] = 'opcache_invalidate("'.$filePath.'", true);';

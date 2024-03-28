@@ -1,10 +1,10 @@
 (()=>{
-    const checkGitStatus = false;
 
     const GIT_CHECK_FILE_COUNT = 125;
 
     const GIT_CHECK_CONCURRENT_CALLS = 4;
 
+    let checkGitStatus = false;
     let project_files;
     let environments = [];
     let selected_files = [];
@@ -60,6 +60,12 @@
             document.querySelector('input[name="user"]').value = env.ftp.user;
             document.querySelector('input[name="pass"]').value = env.ftp.pass;
             document.querySelector('input[name="folder"]').value = env.ftp.folder;
+            checkGitStatus = env.checkgit||false;
+            if(checkGitStatus){
+                document.querySelector('input[name="checkgit"]').setAttribute("checked", "checked");
+            }else{
+                document.querySelector('input[name="checkgit"]').removeAttribute("checked");
+            }
         });
     }
 
@@ -301,11 +307,15 @@
             }
         };
 
+        setStep({upload:{remove:"done"},compare:{remove:"done"},opcache:{remove:"done"}});
+        setStep({upload:{remove:"error"},compare:{remove:"error"},opcache:{remove:"error"}});
+        setStep({upload:{add:"waiting"},compare:{add:"waiting"},opcache:{add:"waiting"}});
+
         setStep({upload:{add:"current", remove:"waiting"}});
         serverPromise('upload/files', params).then((pResponse)=>{
-            if(!pResponse){
+            if(!pResponse || !pResponse.content || pResponse.content.failed_files?.length){
                 setStep({upload:{remove:"current", add:"error"}});
-                console.log(pResponse);
+                console.log(pResponse.content);
                 return;
             }
             setStep({upload:{remove:"current", add:"done"}, compare:{add:"current", remove:"waiting"}});
