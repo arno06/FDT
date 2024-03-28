@@ -20,7 +20,7 @@ namespace core\utils
 
     class DiffResult
     {
-        const DEBUG = true;
+        const DEBUG = false;
 
         public $original;
 
