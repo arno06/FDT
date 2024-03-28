@@ -20,6 +20,8 @@ namespace core\utils
 
     class DiffResult
     {
+        const DEBUG = false;
+
         public $original;
 
         public $new;
@@ -38,8 +40,14 @@ namespace core\utils
             $this->compare();
         }
 
-        private function compare(){
+        private function _trace($pMessage){
+            if(!self::DEBUG){
+                return;
+            }
+            trace($pMessage);
+        }
 
+        private function compare(){
             $diff = 0;
             for($i = 0, $max = count($this->original); $i<$max; $i++){
                 $l = $this->original[$i];
@@ -47,21 +55,36 @@ namespace core\utils
                 if(empty(trim($l))){
                     if(!empty(trim($l2)))
                         $diff -= 1;
+                    $this->_trace("ignoring empty string");
                     continue;
                 }
+                $this->_trace($i." checking ".$l." vs ".($i+$diff)." ".$l2);
                 if(trim($l) === trim($l2)){
+                    $this->_trace(" equal ");
                     continue;
                 }
+                $this->_trace("  else deletion ");
                 for($k = $i + $diff; $k<count($this->new); $k++){
                     $l2 = $this->new[$k];
-                    if($l === $l2){
+                    if(trim($l) == trim($l2)){
+                        $this->_trace(" found further on ".$k." ".$l2." ".$diff);
                         for($j = 0, $maxj = $k - ($i+$diff); $j<$maxj; $j++){
-                            $this->additions[] = array('content'=>$this->new[$k-($j+1)], 'index'=>$k-($j+1));
+                            $this->additions[] = array('content'=>$this->new[$k-($j+1)], 'index'=>$k-($j+1), 'precision'=>'alreadyin');
                             $diff += 1;
                         }
+                        $this->_trace(" after additions ".$diff);
                         continue 2;
                     }
                 }
+                foreach($this->additions as $index=>$addition){
+                    if(trim($addition['content']) === trim($l)){
+                        $diff = $addition['index'] - $i;
+                        $this->_trace(" found in additions ".$addition['content']." new diff ".$diff);
+                        unset($this->additions[$index]);
+                        continue 2;
+                    }
+                }
+                $this->_trace(" not found therefor deleted");
                 $this->deletions[] = array('content'=>$l, 'index'=>$i);
                 $diff -= 1;
             }
@@ -133,11 +156,6 @@ namespace core\utils
             }
 
             return implode('<div class="hidden_lines"></div>', $return);
-            /*
-             * $return = "";
-             * for($i = 0, $max = count($pLines); $i<$max; $i++){
-                $return .= '<div class="line'.(in_array($i, $pChanged)?' '.$pClass:'').'"><div class="number">'.($i+1).'</div><pre class="data">'.htmlentities($pLines[$i]).'</pre></div>';
-            }*/
         }
     }
 }

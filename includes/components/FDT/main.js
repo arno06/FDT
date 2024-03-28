@@ -1,5 +1,5 @@
 (()=>{
-    const checkGitStatus = true;
+    const checkGitStatus = false;
 
     const GIT_CHECK_FILE_COUNT = 125;
 

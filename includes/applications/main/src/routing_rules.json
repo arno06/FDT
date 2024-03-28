@@ -54,6 +54,12 @@
 				"controller": "index",
 				"action": "invalidateOPCache"
 			}
+		},
+		"test": {
+			"GET": {
+				"controller": "local",
+				"action": "test"
+			}
 		}
 	}
 }

@@ -2,8 +2,11 @@
 
 namespace app\main\controllers\front
 {
+
+    use core\application\Autoload;
     use core\application\DefaultController;
     use core\system\File;
+    use core\utils\StringDiff;
 
     class local extends DefaultController{
         public function __construct(){
@@ -95,6 +98,24 @@ namespace app\main\controllers\front
             }
             closedir($dossier);
             return $return;
+        }
+
+        public function test(){
+            Autoload::addComponent('FDT');
+            $remote = '';
+            $local = '';
+
+            $tmpContent = File::read($remote);
+            $localContent = File::read($local);
+
+            $from = explode(PHP_EOL, $tmpContent);
+            $to = explode(PHP_EOL, $localContent);
+            $diff = new StringDiff();
+            $res = $diff->compare($from, $to);
+
+            trace_r($res, true);
+            $this->addContent('comparisons', [['comparison'=>$res]]);
+
         }
     }
 }
