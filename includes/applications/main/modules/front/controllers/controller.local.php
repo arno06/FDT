@@ -102,8 +102,8 @@ namespace app\main\controllers\front
 
         public function test(){
             Autoload::addComponent('FDT');
-            $remote = '';
-            $local = '';
+            $remote = 'files/distant.file';
+            $local = 'files/local.file';
 
             $tmpContent = File::read($remote);
             $localContent = File::read($local);
