@@ -24,6 +24,19 @@
                 displayModal(e.currentTarget.getAttribute("rel"));
             });
         });
+
+        document.querySelector('.modal.selection header .button.select_files').addEventListener('click', ()=>{
+            if(!selected_files.length){
+                return;
+            }
+
+            displayModal('comparison');
+            retrieveFileComparison();
+        });
+        document.querySelector('.modal.selection header .button.refresh_files').addEventListener('click', listFileHandler);
+
+        document.querySelector('.modal.comparison .upload_action').addEventListener('click', deployHandler);
+        document.querySelector('.modal.comparison .refresh_comparisons').addEventListener('click', retrieveFileComparison);
     }
 
     function setEnvironments(pEnvs){
@@ -94,29 +107,25 @@
                 number_ftp.classList.add(c);
                 number_ftp.innerHTML = '2<span class="material-symbols-outlined">'+c+'</span>';
 
-                startingModalActions.classList.toggle('loading');
                 if(checkFolder && checkFTP){
                     document.querySelector('.modal.selection header h2').innerHTML = document.querySelector('input[name="local_folder"]').value+'<span>'+checkFolder.branch+'</span>';
-                    startingModalActions.innerHTML = '';
-                    fileSelectStep();
+                    listFileHandler();
+                    setTimeout(()=>{
+                        displayModal('selection');
+                        startingModalActions.classList.toggle('loading');
+                    }, 500);
                 }
             });
         });
     }
 
-    function fileSelectStep(){
-        setTimeout(()=>{
-            displayModal('selection');
-            listFileHandler();
-        }, 500);
-    }
-
     function listFileHandler(){
+        let body = document.querySelector('.modal.selection .body');
+        body.innerHTML = '<div class="loading_message">Chargement</div>';
         serverPromise('list/local-files', ['local_folder']).then(async (pResult)=>{
 
             project_files = pResult.content.files;
 
-            let body = document.querySelector('.modal.selection .body');
             body.innerHTML = `<div class="form"><div class="search"><input type="search" name="search" placeholder="Filtrer" autocomplete="off" spellcheck="false"></div><div class="unversioned"><input type="checkbox" checked disabled name="unversioned" id="unversioned_files"/><label for="unversioned_files">Par date de modification locale</label></div></div>
 <div class="list">
 </div>`;
@@ -133,15 +142,6 @@
             document.querySelector('input[name="search"]').addEventListener('change', changeSearchHandler);
             document.querySelector('input[name="search"]').addEventListener('search', changeSearchHandler);
             document.querySelector('input[name="search"]').addEventListener('keyup', changeSearchHandler);
-
-            document.querySelector('.modal.selection header .button').addEventListener('click', ()=>{
-                if(!selected_files.length){
-                    return;
-                }
-
-                displayModal('comparison');
-                retrieveFileComparison(selected_files);
-            });
 
             renderFiles();
 
@@ -270,14 +270,13 @@
         });
     }
 
-    function retrieveFileComparison(pSelectedFiles){
+    function retrieveFileComparison(){
         document.querySelector('.modal.comparison .body').innerHTML = '<div class="loading_message">Chargement</div>';
         let params = extractParams(['local_folder', 'host', 'user', 'pass', 'folder']);
-        params.files = pSelectedFiles;
+        params.files = selected_files;
         serverPromise('retrieve/files-comparison?render=true', params).then((pContent)=>{
             document.querySelector('.modal.comparison .body').innerHTML = pContent.html||"Une erreur est apparue";
         });
-        document.querySelector('.modal.comparison .upload_action').addEventListener('click', deployHandler);
     }
 
     function deployHandler(){

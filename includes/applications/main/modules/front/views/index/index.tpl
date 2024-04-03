@@ -47,7 +47,7 @@
 </div>
 
 <div class="modal selection hidden">
-    <header><h2>../vidal-fr<span>master</span></h2> <span class="button"><span class="material-symbols-outlined">check</span>Valider la sélection<span class="count"></span></span></header>
+    <header><h2>../vidal-fr<span>master</span></h2> <div class="actions"><span class="button material-symbols-outlined refresh_files" title="Recharger la liste des fichiers">refresh</span><span class="button select_files"><span class="material-symbols-outlined">check</span>Valider la sélection<span class="count"></span></span></div></header>
     <div class="body">
         <div class="loading_message">
             <div>Chargement des fichiers</div>
@@ -58,7 +58,10 @@
 <div class="modal comparison hidden">
     <header>
         <span class="button return"><span class="material-symbols-outlined">arrow_back_ios</span>Retour à la sélection</span>
-        <span class="button upload_action"><span class="material-symbols-outlined">cloud_upload</span>Déployer</span>
+        <div class="actions">
+            <span class="button material-symbols-outlined refresh_comparisons" title="Recharger les comparaisons">refresh</span>
+            <span class="button upload_action"><span class="material-symbols-outlined">cloud_upload</span>Déployer</span>
+        </div>
     </header>
     <div class="body">
 

@@ -66,7 +66,7 @@ namespace core\utils
                 $this->_trace("  else deletion ");
                 for($k = $i + $diff; $k<count($this->new); $k++){
                     $l2 = $this->new[$k];
-                    if(trim($l) == trim($l2) && trim($this->original[$k + $diff + 1]) != trim($l2)){
+                    if(trim($l) == trim($l2) && trim($this->original[$k + $diff + 1]??"") != trim($l2)){
                         $this->_trace(" found further on ".$k." ".$l2." ".$diff." ");
                         $this->_trace(' adding between '.($k-(1)).' && '.(($k-(1))+($k - ($i+$diff))));
                         for($j = 0, $maxj = $k - ($i+$diff); $j<$maxj; $j++){
