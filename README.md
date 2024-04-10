@@ -56,4 +56,5 @@ Last screen and 3 simple steps:
  * Upload : make sure that the parent folder exists before uploading each files
  * Comparison : Each uploaded files are then compared in order to make sure that modification are deployed
  * OPCache : A script is deployed on the remote host that invalidate each PHP files in the OP Cache. If there is a TPL file, OP Cache si simply resetted 
-If a step fails, deployment is stopped but no rollback (for now) and you can open the inspector for more informations.
+
+Once a step fails, deployment is stopped but there is no rollback (for now) and you can open the inspector for more informations.

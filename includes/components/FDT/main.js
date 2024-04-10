@@ -98,8 +98,6 @@
             serverPromise('check/ftp', ['host', 'user', 'pass', 'folder']).then((pResult)=>{
                 let checkFTP = pResult?.content;
 
-                console.log(checkFTP);
-
                 let number_ftp = document.querySelector('.ftp.number');
 
                 c = !checkFTP ? 'close':'done';
@@ -109,6 +107,9 @@
 
                 if(checkFolder && checkFTP){
                     document.querySelector('.modal.selection header h2').innerHTML = document.querySelector('input[name="local_folder"]').value+'<span>'+checkFolder.branch+'</span>';
+                    selected_files = [];
+                    project_files = [];
+                    checkGitStatus = !!document.querySelector('input[name="checkgit"]').checked;
                     listFileHandler();
                     setTimeout(()=>{
                         displayModal('selection');
