@@ -5,6 +5,7 @@ namespace app\main\controllers\front
     use app\main\src\application\FDTController;
     use core\application\Autoload;
     use core\system\File;
+    use core\utils\DiffResult;
     use core\utils\StringDiff;
 
     class index extends FDTController
@@ -30,24 +31,38 @@ namespace app\main\controllers\front
             $comparisons = [];
             foreach($files as $idx=>$file){
                 $filePath = str_replace($local_folder.'/', '', $file);
+                $isBinary = !$this->isTextType($file);
                 $localTmp = 'includes/applications/main/_cache/'.$idx.'.tmp';
-                if(ftp_get($this->ftp, $localTmp, $filePath, FTP_ASCII)){
-                    $tmpContent = File::read($localTmp);
+                if(ftp_get($this->ftp, $localTmp, $filePath, !$isBinary?FTP_ASCII:FTP_BINARY)){
+                    if(!$isBinary){
+                        $tmpContent = File::read($localTmp);
+                    }else{
+                        $tmpContent = sha1_file($localTmp);
+                    }
                     File::delete($localTmp);
                 }else{
                     $tmpContent = "";
                 }
 
-                $localContent = File::read($file);
+                if(!$isBinary){
+                    $localContent = File::read($file);
 
-                $from = explode(PHP_EOL, $tmpContent);
-                $to = explode(PHP_EOL, $localContent);
-                $diff = new StringDiff();
-                $res = $diff->compare($from, $to);
-                if($res->identicals){
-                    $identicals++;
+                    $from = explode(PHP_EOL, $tmpContent);
+                    $to = explode(PHP_EOL, $localContent);
+                    $diff = new StringDiff();
+                    $res = $diff->compare($from, $to);
+                    if($res->identicals){
+                        $identicals++;
+                    }
+                }else{
+                    $localContent = sha1_file($file);
+                    $res = new GenericDiff();
+                    if($localContent === $tmpContent){
+                        $identicals++;
+                        $res->identicals = true;
+                    }
                 }
-                $comparisons[] = ["file"=>$file, "comparison"=>$res];
+                $comparisons[] = ["file"=>$file, "comparison"=>$res, "isBinary"=>$isBinary];
             }
             if(count($files) === $identicals){
                 $this->addContent('identicals', true);
@@ -95,5 +110,16 @@ PHP;
             File::delete($local);
             $this->addContent('invalidated', true);
         }
+
+        private function isTextType($pFile){
+            $types_text = ['php', 'js', 'css', 'json', 'xml', 'html', 'tpl', 'htaccess', 'txt', 'csv', 'svg'];
+            $parts = explode('.', $pFile);
+            $ext = strtolower(array_pop($parts));
+            return in_array($ext, $types_text);
+        }
+    }
+
+    class GenericDiff{
+        public $identicals = false;
     }
 }
