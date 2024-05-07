@@ -307,33 +307,42 @@
             }
         };
 
-        setStep({upload:{remove:"done"},compare:{remove:"done"},opcache:{remove:"done"}});
-        setStep({upload:{remove:"error"},compare:{remove:"error"},opcache:{remove:"error"}});
-        setStep({upload:{add:"waiting"},compare:{add:"waiting"},opcache:{add:"waiting"}});
+        setStep({backup:{remove:"done"},upload:{remove:"done"},compare:{remove:"done"},opcache:{remove:"done"}});
+        setStep({backup:{remove:"error"},upload:{remove:"error"},compare:{remove:"error"},opcache:{remove:"error"}});
+        setStep({backup:{add:"waiting"},upload:{add:"waiting"},compare:{add:"waiting"},opcache:{add:"waiting"}});
 
-        setStep({upload:{add:"current", remove:"waiting"}});
-        serverPromise('upload/files', params).then((pResponse)=>{
+        setStep({backup:{add:"current", remove:"waiting"}});
+        serverPromise('ftp/backup', params).then((pResponse)=>{
             if(!pResponse || !pResponse.content || pResponse.content.failed_files?.length){
-                setStep({upload:{remove:"current", add:"error"}});
+                setStep({backup:{remove:"current", add:"error"}});
                 console.log(pResponse.content);
                 return;
             }
-            setStep({upload:{remove:"current", add:"done"}, compare:{add:"current", remove:"waiting"}});
-            serverPromise('retrieve/files-comparison', params).then((pResponse)=>{
-                if(!pResponse || !pResponse.content || !pResponse.content.identicals){
-                    setStep({compare:{remove:"current", add:"error"}});
-                    console.log(pResponse);
+            setStep({backup:{remove:"current", add:"done"},upload:{add:"current", remove:"waiting"}});
+            return;
+            serverPromise('upload/files', params).then((pResponse)=>{
+                if(!pResponse || !pResponse.content || pResponse.content.failed_files?.length){
+                    setStep({upload:{remove:"current", add:"error"}});
+                    console.log(pResponse.content);
                     return;
                 }
-                setStep({compare:{remove:"current", add:"done"}, opcache:{add:"current", remove:"waiting"}});
-                serverPromise('invalidate/op-cache', params).then((pResponse)=>{
-                    if(!pResponse){
-                        setStep({opcache:{remove:"current", add:"error"}});
+                setStep({upload:{remove:"current", add:"done"}, compare:{add:"current", remove:"waiting"}});
+                serverPromise('retrieve/files-comparison', params).then((pResponse)=>{
+                    if(!pResponse || !pResponse.content || !pResponse.content.identicals){
+                        setStep({compare:{remove:"current", add:"error"}});
                         console.log(pResponse);
                         return;
                     }
-                    setStep({opcache:{remove:"current", add:"done"}});
-                    console.log("finished");
+                    setStep({compare:{remove:"current", add:"done"}, opcache:{add:"current", remove:"waiting"}});
+                    serverPromise('invalidate/op-cache', params).then((pResponse)=>{
+                        if(!pResponse){
+                            setStep({opcache:{remove:"current", add:"error"}});
+                            console.log(pResponse);
+                            return;
+                        }
+                        setStep({opcache:{remove:"current", add:"done"}});
+                        console.log("finished");
+                    });
                 });
             });
         });
