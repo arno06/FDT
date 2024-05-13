@@ -25,7 +25,6 @@ namespace app\main\controllers\front{
                 return;
             }
             $this->addContent('result', true);
-            ftp_close($this->ftp);
         }
 
         public function uploadFiles(){
@@ -66,7 +65,6 @@ namespace app\main\controllers\front{
             $this->addContent('uploaded_files', $uploaded_files);
             $this->addContent('failed_files', $failed_files);
             $this->addContent('created_folder', $created_folder);
-            ftp_close($this->ftp);
         }
 
         public function backup(){
@@ -105,7 +103,6 @@ namespace app\main\controllers\front{
             $this->addContent('backup_files', $backup_files);
             $this->addContent('failed_files', $failed_files);
             $this->addContent('folder', $backup_folder);
-            ftp_close($this->ftp);
         }
     }
 }

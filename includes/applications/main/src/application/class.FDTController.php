@@ -3,6 +3,7 @@
 namespace app\main\src\application{
 
     use core\application\DefaultController;
+    use core\utils\Logs;
 
     class FDTController extends DefaultController
     {
@@ -28,6 +29,15 @@ namespace app\main\src\application{
                 return false;
             }
             return true;
+        }
+
+        public function render($pDisplay = true)
+        {
+            if($this->ftp){
+                Logs::write('fpt closed');
+                ftp_close($this->ftp);
+            }
+            return parent::render($pDisplay);
         }
 
         protected function isTextType($pFile){
