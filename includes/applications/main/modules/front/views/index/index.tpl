@@ -72,7 +72,7 @@
     <div class="body">
         <div class="loading_message">
             <div class="steps">
-                <div class="save waiting"><span class="error material-symbols-outlined">close</span><span class="done material-symbols-outlined">done</span><span class="current material-symbols-outlined">chevron_right</span>Sauvegarde</div>
+                <div class="backup waiting"><span class="error material-symbols-outlined">close</span><span class="done material-symbols-outlined">done</span><span class="current material-symbols-outlined">chevron_right</span>Sauvegarde</div>
                 <div class="upload waiting"><span class="error material-symbols-outlined">close</span><span class="done material-symbols-outlined">done</span><span class="current material-symbols-outlined">chevron_right</span>Upload</div>
                 <div class="compare waiting"><span class="error material-symbols-outlined">close</span><span class="done material-symbols-outlined">done</span><span class="current material-symbols-outlined">chevron_right</span>Comparaison</div>
                 <div class="opcache waiting"><span class="error material-symbols-outlined">close</span><span class="done material-symbols-outlined">done</span><span class="current material-symbols-outlined">chevron_right</span>OPCache</div>

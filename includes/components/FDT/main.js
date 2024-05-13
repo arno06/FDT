@@ -319,7 +319,6 @@
                 return;
             }
             setStep({backup:{remove:"current", add:"done"},upload:{add:"current", remove:"waiting"}});
-            return;
             serverPromise('upload/files', params).then((pResponse)=>{
                 if(!pResponse || !pResponse.content || pResponse.content.failed_files?.length){
                     setStep({upload:{remove:"current", add:"error"}});

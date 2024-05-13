@@ -3,6 +3,7 @@ namespace app\main\controllers\front{
 
 
     use app\main\src\application\FDTController;
+    use core\application\Core;
 
     class ftp extends FDTController {
 
@@ -60,6 +61,10 @@ namespace app\main\controllers\front{
             $this->addContent('failed_files', $failed_files);
             $this->addContent('created_folder', $created_folder);
             ftp_close($this->ftp);
+        }
+
+        public function backup(){
+
         }
     }
 }

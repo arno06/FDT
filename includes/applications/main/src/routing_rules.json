@@ -49,6 +49,12 @@
 				"action": "uploadFiles"
 			}
 		},
+		"ftp/backup": {
+			"*": {
+				"controller": "ftp",
+				"action": "backup"
+			}
+		},
 		"invalidate/op-cache": {
 			"*": {
 				"controller": "index",
