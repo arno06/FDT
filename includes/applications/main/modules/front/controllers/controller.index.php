@@ -110,13 +110,6 @@ PHP;
             File::delete($local);
             $this->addContent('invalidated', true);
         }
-
-        private function isTextType($pFile){
-            $types_text = ['php', 'js', 'css', 'json', 'xml', 'html', 'tpl', 'htaccess', 'txt', 'csv', 'svg'];
-            $parts = explode('.', $pFile);
-            $ext = strtolower(array_pop($parts));
-            return in_array($ext, $types_text);
-        }
     }
 
     class GenericDiff{

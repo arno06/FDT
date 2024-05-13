@@ -59,7 +59,7 @@ input[type="password"]:focus{border-bottom-color:#3B444E;}
 input[name="file_select"]{display:none;}
 
 .modal .actions{justify-content: center;display:flex;margin-top:2em;height:45px;overflow:hidden;}
-.modal header .button, .modal .actions .go{user-select:none;display:flex;align-items: center;gap:.5em;padding:.5em 1em;background:#297FB8;color:#fff;font-size:0.9em;cursor: pointer;border-bottom:solid 2px #77afd7;transition:all .3s;}
+.modal.deployment .actions .button, .modal header .button, .modal .actions .go{user-select:none;display:flex;align-items: center;gap:.5em;padding:.5em 1em;background:#297FB8;color:#fff;font-size:0.9em;cursor: pointer;border-bottom:solid 2px #77afd7;transition:all .3s;}
 .modal header .actions{margin-top:0;height:auto;gap:.8em;}
 
 .modal .actions.loading{background:url("imgs/Loading.gif") no-repeat center center;background-size:32px 32px;}
@@ -115,6 +115,7 @@ input[name="file_select"]{display:none;}
 .modal.deployment .body .loading_message .steps>div.waiting{color:#9FA7B4}
 .modal.deployment .body .loading_message .steps>div.waiting span.current,
 .modal.deployment .body .loading_message .steps>div.current span.current{display:block;}
+.modal.deployment .actions{display:none;}
 
 div.deleted{background:rgba(255, 0, 0, .2);}
 div.added{background:rgba(0, 255, 0, .2);}

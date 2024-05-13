@@ -73,6 +73,7 @@
             document.querySelector('input[name="user"]').value = env.ftp.user;
             document.querySelector('input[name="pass"]').value = env.ftp.pass;
             document.querySelector('input[name="folder"]').value = env.ftp.folder;
+            document.querySelector('input[name="name"]').value = env.name;
             checkGitStatus = env.checkgit||false;
             if(checkGitStatus){
                 document.querySelector('input[name="checkgit"]').setAttribute("checked", "checked");
@@ -289,61 +290,80 @@
 
         displayModal('deployment');
 
-        let params = extractParams(['local_folder', 'host', 'user', 'pass', 'folder', 'domain']);
+        let params = extractParams(['local_folder', 'host', 'user', 'pass', 'folder', 'domain', 'name']);
         params.files = files;
-
-        const setStep = (pSteps)=>{
-            for(let i in pSteps){
-                if(!pSteps.hasOwnProperty(i)){
-                    continue;
-                }
-                let actions = pSteps[i];
-                for(let j in actions){
-                    if(!actions.hasOwnProperty(j)){
-                        continue;
-                    }
-                    document.querySelector('.modal.deployment .body .steps .'+i).classList[j](actions[j]);
-                }
-            }
-        };
 
         setStep({backup:{remove:"done"},upload:{remove:"done"},compare:{remove:"done"},opcache:{remove:"done"}});
         setStep({backup:{remove:"error"},upload:{remove:"error"},compare:{remove:"error"},opcache:{remove:"error"}});
         setStep({backup:{add:"waiting"},upload:{add:"waiting"},compare:{add:"waiting"},opcache:{add:"waiting"}});
 
-        setStep({backup:{add:"current", remove:"waiting"}});
-        serverPromise('ftp/backup', params).then((pResponse)=>{
-            if(!pResponse || !pResponse.content || pResponse.content.failed_files?.length){
-                setStep({backup:{remove:"current", add:"error"}});
-                console.log(pResponse.content);
+        nextStep(params);
+    }
+
+    function setStep(pSteps){
+        for(let i in pSteps){
+            if(!pSteps.hasOwnProperty(i)){
+                continue;
+            }
+            let actions = pSteps[i];
+            for(let j in actions){
+                if(!actions.hasOwnProperty(j)){
+                    continue;
+                }
+                document.querySelector('.modal.deployment .body .steps .'+i).classList[j](actions[j]);
+            }
+        }
+    }
+
+    let deploymentSteps = [
+        {
+            name:"backup",
+            url:"ftp/backup",
+            checkError:(pResponse)=>!!pResponse.content.failed_files?.length
+        },
+        {
+            name:"upload",
+            url:"upload/files",
+            checkError:(pResponse)=>!!pResponse.content.failed_files?.length
+        },
+        {
+            name:"compare",
+            url:"retrieve/files-comparison",
+            checkError:(pResponse)=>pResponse.content.identicals!=="1"
+        },
+        {
+            name:"opcache",
+            url:"invalidate/op-cache",
+            checkError:(pResponse)=>false
+        }
+    ];
+
+    let currentStep = -1;
+    function nextStep(pParams){
+        let classes = {};
+        if(currentStep > -1){
+            let previous = deploymentSteps[currentStep];
+            classes[previous.name] = {remove:"current",add:"done"};
+        }
+        let current = deploymentSteps[++currentStep];
+        if(current){
+            classes[current.name] = {add:"current",remove:"waiting"};
+        }
+        setStep(classes);
+
+        if(!current){
+            console.log("finished");
+            return;
+        }
+        serverPromise(current.url, pParams).then((pResponse)=>{
+            if(!pResponse || current.checkError(pResponse)){
+                classes = {};
+                classes[current.name] = {remove:"current", add:"error"};
+                setStep(classes);
+                console.log(pResponse);
                 return;
             }
-            setStep({backup:{remove:"current", add:"done"},upload:{add:"current", remove:"waiting"}});
-            serverPromise('upload/files', params).then((pResponse)=>{
-                if(!pResponse || !pResponse.content || pResponse.content.failed_files?.length){
-                    setStep({upload:{remove:"current", add:"error"}});
-                    console.log(pResponse.content);
-                    return;
-                }
-                setStep({upload:{remove:"current", add:"done"}, compare:{add:"current", remove:"waiting"}});
-                serverPromise('retrieve/files-comparison', params).then((pResponse)=>{
-                    if(!pResponse || !pResponse.content || !pResponse.content.identicals){
-                        setStep({compare:{remove:"current", add:"error"}});
-                        console.log(pResponse);
-                        return;
-                    }
-                    setStep({compare:{remove:"current", add:"done"}, opcache:{add:"current", remove:"waiting"}});
-                    serverPromise('invalidate/op-cache', params).then((pResponse)=>{
-                        if(!pResponse){
-                            setStep({opcache:{remove:"current", add:"error"}});
-                            console.log(pResponse);
-                            return;
-                        }
-                        setStep({opcache:{remove:"current", add:"done"}});
-                        console.log("finished");
-                    });
-                });
-            });
+            nextStep(pParams);
         });
     }
 

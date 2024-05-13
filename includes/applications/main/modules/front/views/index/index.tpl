@@ -14,6 +14,7 @@
             <span class="number local_folder">1</span>
             <label>Dossier de travail</label>
             <div class="form">
+                <input name="name" type="hidden">
                 <div class="button">
                     <label for="file_select" class="material-symbols-outlined">folder_open</label>
                     <input type="file" id="file_select" name="file_select"/>
@@ -47,7 +48,7 @@
 </div>
 
 <div class="modal selection hidden">
-    <header><h2>../vidal-fr<span>master</span></h2> <div class="actions"><span class="button material-symbols-outlined refresh_files" title="Recharger la liste des fichiers">refresh</span><span class="button select_files"><span class="material-symbols-outlined">check</span>Valider la sélection<span class="count"></span></span></div></header>
+    <header><h2>folder<span>branch</span></h2> <div class="actions"><span class="button material-symbols-outlined refresh_files" title="Recharger la liste des fichiers">refresh</span><span class="button select_files"><span class="material-symbols-outlined">check</span>Valider la sélection<span class="count"></span></span></div></header>
     <div class="body">
         <div class="loading_message">
             <div>Chargement des fichiers</div>
