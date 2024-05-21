@@ -297,6 +297,7 @@
         setStep({backup:{remove:"error"},upload:{remove:"error"},compare:{remove:"error"},opcache:{remove:"error"}});
         setStep({backup:{add:"waiting"},upload:{add:"waiting"},compare:{add:"waiting"},opcache:{add:"waiting"}});
 
+        currentStep = -1;
         nextStep(params);
     }
 

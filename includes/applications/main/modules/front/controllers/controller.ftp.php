@@ -90,11 +90,8 @@ namespace app\main\controllers\front{
                 $parts = explode('/', $local);
                 array_pop($parts);
                 Folder::create(implode('/', $parts));
-                if(ftp_get($this->ftp, $local, $distant, $this->isTextType($distant)?FTP_ASCII:FTP_BINARY)){
-                    $backup_files[] = $local;
-                }else{
-                    $failed_files[] = $file;
-                }
+                $backup_files[] = $local;
+                ftp_get($this->ftp, $local, $distant, $this->isTextType($distant)?FTP_ASCII:FTP_BINARY);
             }
             if(count($files) === count($backup_files)){
                 $this->addContent('backup', true);
