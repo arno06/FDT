@@ -117,6 +117,16 @@ input[name="file_select"]{display:none;}
 .modal.deployment .body .loading_message .steps>div.current span.current{display:block;}
 .modal.deployment .actions{display:none;}
 
+.modal.backups{width:800px;}
+.modal.backups .body{flex-direction: row;gap:.5em;}
+.modal.backups .body>div{overflow-y: auto;padding:.5em;flex:1 1 auto;}
+.modal.backups .body>div.projects,
+.modal.backups .body>div.backups{flex:0 0 auto;width:200px;border-right:solid 1px #efefef;}
+.modal.backups .body>div ul{padding:0;margin:0;list-style:none;}
+.modal.backups .body>div ul>li{cursor:pointer;padding:5px;font-size:.9em;}
+.modal.backups .body>div ul>li:hover{background:#fafafa;}
+.modal.backups .body>div ul>li.current{background:#eee;}
+
 div.deleted{background:rgba(255, 0, 0, .2);}
 div.added{background:rgba(0, 255, 0, .2);}
 

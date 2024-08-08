@@ -37,6 +37,24 @@
 				"action": "getUpdatedGitInfo"
 			}
 		},
+		"retrieve/saved-projects": {
+			"*": {
+				"controller": "local",
+				"action": "getSavedProjects"
+			}
+		},
+		"retrieve/backups": {
+			"*": {
+				"controller": "local",
+				"action": "getBackups"
+			}
+		},
+		"retrieve/backup": {
+			"*": {
+				"controller": "local",
+				"action": "getBackup"
+			}
+		},
 		"retrieve/files-comparison": {
 			"*": {
 				"controller": "index",

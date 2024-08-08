@@ -6,6 +6,7 @@ namespace app\main\controllers\front
     use core\application\Autoload;
     use core\application\DefaultController;
     use core\system\File;
+    use core\system\Folder;
     use core\utils\StringDiff;
 
     class local extends DefaultController{
@@ -29,7 +30,7 @@ namespace app\main\controllers\front
 
         public function readLocalFolder(){
             $local_folder = $_POST['local_folder'];
-            $files = $this->readFiles($local_folder, ['.git', '.idea'], $local_folder);
+            $files = $this->readFiles($local_folder, ['.git', '.idea']);
             $this->addContent('files', $files);
         }
 
@@ -77,7 +78,46 @@ namespace app\main\controllers\front
             $this->addContent('files', $files);
         }
 
-        private function readFiles($pPath, $pIgnore, $pBaseFolder){
+        public function getSavedProjects(){
+            $projects = Folder::read('files/backups/', false);
+
+            $backups = [];
+
+            foreach($projects as $file=>$project){
+                if($file == ".gitkeep"){
+                    continue;
+                }
+                $count = count(Folder::read($project['path']), false);
+                $backups[] = ["name"=>$file, "count"=>$count];
+            }
+
+            $this->addContent('backups', $backups);
+        }
+
+        public function getBackups(){
+            $folders = Folder::read('files/backups/'.$_GET['project'], false);
+
+            $backups = [];
+
+            foreach($folders as $file=>$project){
+                $time = filemtime($project['path']);
+                $backups[] = ["project"=>$_GET['project'], "name"=>$file, "date"=>date('d/m/y H:i', $time), "time"=>$time];
+            }
+
+            usort($backups, function($pA, $pB){
+                return $pB['time'] - $pA['time'];
+            });
+            $this->addContent('backups', $backups);
+        }
+
+        public function getBackup(){
+
+            $files = $this->readFiles('files/backups/'.$_GET['project'].'/'.$_GET['backup'].'/', []);
+
+            $this->addContent('files', $files);
+        }
+
+        private function readFiles($pPath, $pIgnore){
             $return = array();
             $dossier = opendir($pPath);
             $pPath = preg_replace('/\/$/', "", $pPath);
@@ -89,11 +129,13 @@ namespace app\main\controllers\front
                 }
                 $f = $pPath."/".$file;
                 if(!is_file($f))
-                    $return = array_merge($return, self::readFiles($f, $pIgnore, $pBaseFolder));
+                    $return = array_merge($return, self::readFiles($f, $pIgnore));
                 else{
                     $infos = stat($f);
                     $lastMTime = $infos['mtime'];
-                    $return[]= array("filename"=>$f, "timestamp"=>null, "last_modified_date"=>null, "last_m_time"=>$lastMTime);
+                    $name = explode('/', $f);
+                    $name = array_pop($name);
+                    $return[]= array("filename"=>$f, "timestamp"=>null, "last_modified_date"=>null, "last_m_time"=>$lastMTime, "name"=>$name);
                 }
             }
             closedir($dossier);

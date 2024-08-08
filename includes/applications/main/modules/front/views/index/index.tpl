@@ -7,6 +7,8 @@
    <li rel="comparison">Comparaison</li>
     <li><span class="material-symbols-outlined">chevron_right</span></li>
    <li rel="deployment">Déploiement</li>
+    <li><span class="material-symbols-outlined">more_horiz</span></li>
+    <li rel="backups">Backups</li>
 </ul>
 <div class="modal project hidden">
     <div class="steps">
@@ -82,6 +84,28 @@
     </div>
     <div class="actions">
         <span class="button"><span class="material-symbols-outlined">undo</span>Rollback</span>
+    </div>
+</div>
+
+<div class="modal backups hidden">
+    <header>
+        <div class="actions">
+            <span class="button material-symbols-outlined reload_backups" title="Recharger les backups disponibles">refresh</span>
+        </div>
+    </header>
+    <div class="body">
+        <div class="projects">
+
+        </div>
+        <div class="backups">
+
+        </div>
+        <div class="files">
+
+        </div>
+    </div>
+    <div class="actions">
+
     </div>
 </div>
 {if $content.envs}

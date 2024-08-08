@@ -37,6 +37,9 @@
 
         document.querySelector('.modal.comparison .upload_action').addEventListener('click', deployHandler);
         document.querySelector('.modal.comparison .refresh_comparisons').addEventListener('click', retrieveFileComparison);
+
+        document.querySelector('.modal.backups .reload_backups').addEventListener('click', reloadBackups);
+        reloadBackups();
     }
 
     function setEnvironments(pEnvs){
@@ -339,6 +342,37 @@
         }
     ];
 
+    function reloadBackups(){
+        document.querySelector('.modal.backups .body .backups').innerHTML = "";
+        document.querySelector('.modal.backups .body .files').innerHTML = "";
+        serverPromise('retrieve/saved-projects?render=true').then((pContent)=>{
+            document.querySelector('.modal.backups .body .projects').innerHTML = pContent.html||"Une erreur est apparue";
+            document.querySelectorAll('.modal.backups .body .projects ul li').forEach((pEl)=>{
+                pEl.addEventListener('click', loadBackupList);
+            });
+        });
+    }
+
+    function loadBackupList(e){
+        e.currentTarget.parentNode.querySelector('.current')?.classList.remove("current");
+        e.currentTarget.classList.add('current');
+        document.querySelector('.modal.backups .body .files').innerHTML = "";
+        serverPromise('retrieve/backups?render=true&project='+e.currentTarget.getAttribute('data-name')).then((pContent)=>{
+            document.querySelector('.modal.backups .body .backups').innerHTML = pContent.html||"Une erreur est apparue";
+            document.querySelectorAll('.modal.backups .body .backups ul li').forEach((pEl)=>{
+                pEl.addEventListener('click', loadBackup);
+            });
+        });
+    }
+
+    function loadBackup(e){
+        e.currentTarget.parentNode.querySelector('.current')?.classList.remove("current");
+        e.currentTarget.classList.add('current');
+        serverPromise('retrieve/backup?render=true&backup='+e.currentTarget.getAttribute('data-name')+'&project='+e.currentTarget.getAttribute('data-project')).then((pContent)=>{
+            document.querySelector('.modal.backups .body .files').innerHTML = pContent.html||"Une erreur est apparue";
+        });
+    }
+
     let currentStep = -1;
     function nextStep(pParams){
         let classes = {};
@@ -353,6 +387,7 @@
         setStep(classes);
 
         if(!current){
+            reloadBackups();
             console.log("finished");
             return;
         }
