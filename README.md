@@ -6,6 +6,7 @@ PHP application to be run on a local environment containing the projects to be d
  * File Selection
  * File Comparison
  * Deployment
+ * Backups
 
 ## Requirement
  * Apache local webserver
@@ -52,9 +53,18 @@ Third screen:
 
 ## Deployment
 
-Last screen and 3 simple steps: 
+Last screen and 4 steps: 
+ * Backup : Create a local backup of the distant versions for the selected files
  * Upload : make sure that the parent folder exists before uploading each files
  * Comparison : Each uploaded files are then compared in order to make sure that modification are deployed
  * OPCache : A script is deployed on the remote host that invalidate each PHP files in the OP Cache. If there is a TPL file, OP Cache si simply resetted 
 
-Once a step fails, deployment is stopped but there is no rollback (for now) and you can open the inspector for more informations.
+Once a step fails, deployment is stopped and you can open the inspector for more informations.
+
+## Backups
+
+Optional screen:
+ * For each deployments done with FDT, a backup is stored in the `files/backups` folder
+ * Backups are grouped by project and listed by their deployment timestamp
+ * Each backup can be compared with the distant version - and deployed back
+ * Each backup can be removed, permanently
