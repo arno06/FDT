@@ -1,5 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 
+files/backups/*
 includes/resources/envs.json
 
 *.tpl.php
