@@ -5,6 +5,8 @@ namespace app\main\controllers\front
 
     use core\application\Autoload;
     use core\application\DefaultController;
+    use core\application\routing\RoutingHandler;
+    use core\data\SimpleJSON;
     use core\system\File;
     use core\system\Folder;
     use core\utils\StringDiff;
@@ -79,6 +81,8 @@ namespace app\main\controllers\front
         }
 
         public function getSavedProjects(){
+            $envs = SimpleJSON::import('includes/resources/envs.json');
+
             $projects = Folder::read('files/backups/', false);
 
             $backups = [];
@@ -87,8 +91,15 @@ namespace app\main\controllers\front
                 if($file == ".gitkeep"){
                     continue;
                 }
+                $index = false;
+                foreach($envs as $idx => $env){
+                    if ($file == RoutingHandler::sanitize($env['name'])){
+                        $index = $idx;
+                        break;
+                    }
+                }
                 $count = count(Folder::read($project['path']), false);
-                $backups[] = ["name"=>$file, "count"=>$count];
+                $backups[] = ["name"=>$file, "count"=>$count, "index"=>$index];
             }
 
             $this->addContent('backups', $backups);

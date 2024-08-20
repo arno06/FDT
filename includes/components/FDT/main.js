@@ -8,6 +8,8 @@
     let project_files;
     let environments = [];
     let selected_files = [];
+    let currentEnv = null;
+    let previous;
 
     function init(){
         if(window.envs){
@@ -15,7 +17,7 @@
         }
         displayModal('project');
         document.querySelector('.go').addEventListener('click', startHandler);
-        document.querySelector('.comparison.modal header .button.return').addEventListener('click', ()=>displayModal('selection'));
+        document.querySelector('.comparison.modal header .button.return').addEventListener('click', ()=>displayModal(previous==='selection'?'selection':'backups'));
         document.querySelectorAll('.breadcrumb li').forEach((pElement)=>{
             pElement.addEventListener('click', (e)=>{
                 if(!e.currentTarget.getAttribute("rel")){
@@ -38,7 +40,7 @@
         document.querySelector('.modal.comparison .upload_action').addEventListener('click', deployHandler);
         document.querySelector('.modal.comparison .refresh_comparisons').addEventListener('click', retrieveFileComparison);
 
-        document.querySelector('.modal.backups .reload_backups').addEventListener('click', reloadBackups);
+        //document.querySelector('.modal.backups .reload_backups').addEventListener('click', reloadBackups);
         reloadBackups();
     }
 
@@ -83,6 +85,15 @@
             }else{
                 document.querySelector('input[name="checkgit"]').removeAttribute("checked");
             }
+            currentEnv = {
+                local_folder:env.local_folder,
+                domain:env.domain,
+                host:env.ftp.host,
+                user:env.ftp.user,
+                pass:env.ftp.pass,
+                folder:env.ftp.folder,
+                name:env.name
+            };
         });
     }
 
@@ -277,7 +288,7 @@
 
     function retrieveFileComparison(){
         document.querySelector('.modal.comparison .body').innerHTML = '<div class="loading_message">Chargement</div>';
-        let params = extractParams(['local_folder', 'host', 'user', 'pass', 'folder']);
+        let params = Object.assign({}, currentEnv);
         params.files = selected_files;
         serverPromise('retrieve/files-comparison?render=true', params).then((pContent)=>{
             document.querySelector('.modal.comparison .body').innerHTML = pContent.html||"Une erreur est apparue";
@@ -293,7 +304,7 @@
 
         displayModal('deployment');
 
-        let params = extractParams(['local_folder', 'host', 'user', 'pass', 'folder', 'domain', 'name']);
+        let params = Object.assign({}, currentEnv);
         params.files = files;
 
         setStep({backup:{remove:"done"},upload:{remove:"done"},compare:{remove:"done"},opcache:{remove:"done"}});
@@ -370,7 +381,26 @@
         e.currentTarget.classList.add('current');
         serverPromise('retrieve/backup?render=true&backup='+e.currentTarget.getAttribute('data-name')+'&project='+e.currentTarget.getAttribute('data-project')).then((pContent)=>{
             document.querySelector('.modal.backups .body .files').innerHTML = pContent.html||"Une erreur est apparue";
+            document.querySelector('.modal.backups .body .actions .compare_backup').addEventListener('click', compareBackUpHandler);
         });
+    }
+
+    function compareBackUpHandler(e){
+        let currentSave = document.querySelector('.modal.backups .body .backups ul li.current');
+        let currentFolder = 'files/backups/'+currentSave.getAttribute("data-project")+"/"+currentSave.getAttribute("data-name");
+        let files = Array.from(document.querySelectorAll('.modal.backups .body .files ul li')).map((pEl)=>pEl.getAttribute("title"));
+
+        let envIndex = document.querySelector('.modal.backups .body .projects ul li.current').getAttribute("data-index");
+
+        let envSelect = document.querySelector('.envs select');
+        envSelect.value = envIndex;
+        envSelect.dispatchEvent(new Event("change"));
+
+        currentEnv.local_folder = currentFolder;
+        selected_files = files;
+
+        retrieveFileComparison();
+        displayModal('comparison');
     }
 
     let currentStep = -1;
@@ -416,9 +446,15 @@
     }
 
     function displayModal(pModal){
+        if(pModal === "project"){
+            document.querySelector('.modal.project .env select')?.dispatchEvent(new Event('change'));
+        }
         document.querySelector('.modal:not(.hidden)')?.classList.add('hidden');
         document.querySelector('.modal.'+pModal).classList.remove('hidden');
-        document.querySelector('.breadcrumb li.current')?.classList.remove('current');
+        if(document.querySelector('.breadcrumb li.current')){
+            previous = document.querySelector('.breadcrumb li.current').getAttribute("rel");
+            document.querySelector('.breadcrumb li.current').classList.remove('current');
+        }
         document.querySelector('.breadcrumb li[rel="'+pModal+'"]')?.classList.add('current');
     }
 

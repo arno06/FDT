@@ -88,11 +88,6 @@
 </div>
 
 <div class="modal backups hidden">
-    <header>
-        <div class="actions">
-            <span class="button material-symbols-outlined reload_backups" title="Recharger les backups disponibles">refresh</span>
-        </div>
-    </header>
     <div class="body">
         <div class="projects">
 
@@ -103,9 +98,6 @@
         <div class="files">
 
         </div>
-    </div>
-    <div class="actions">
-
     </div>
 </div>
 {if $content.envs}

@@ -119,6 +119,7 @@ input[name="file_select"]{display:none;}
 
 .modal.backups{width:800px;}
 .modal.backups .body{flex-direction: row;gap:.5em;}
+.modal.backups .body header.actions{margin:0 0 1em;}
 .modal.backups .body>div{overflow-y: auto;padding:.5em;flex:1 1 auto;}
 .modal.backups .body>div.projects,
 .modal.backups .body>div.backups{flex:0 0 auto;width:200px;border-right:solid 1px #efefef;}
