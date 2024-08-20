@@ -34,7 +34,6 @@ namespace app\main\src\application{
         public function render($pDisplay = true)
         {
             if($this->ftp){
-                Logs::write('fpt closed');
                 ftp_close($this->ftp);
             }
             return parent::render($pDisplay);
