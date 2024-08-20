@@ -4,7 +4,9 @@ namespace app\main\controllers\front
 {
 
     use core\application\Autoload;
+    use core\application\Core;
     use core\application\DefaultController;
+    use core\application\Go;
     use core\application\routing\RoutingHandler;
     use core\data\SimpleJSON;
     use core\system\File;
@@ -126,6 +128,19 @@ namespace app\main\controllers\front
             $files = $this->readFiles('files/backups/'.$_GET['project'].'/'.$_GET['backup'].'/', []);
 
             $this->addContent('files', $files);
+        }
+
+        public function deleteBackup(){
+            if(!Core::checkRequiredGetVars('project', 'backup')){
+                Go::to404();
+            }
+            $folder = 'files/backups/'.$_GET['project'].'/'.$_GET['backup'].'/';
+            if(!file_exists($folder)){
+                $this->addContent('error', 'no folder');
+                return;
+            }
+            Folder::deleteRecursive($folder);
+            $this->addContent('confirmation', 'deleted');
         }
 
         private function readFiles($pPath, $pIgnore){

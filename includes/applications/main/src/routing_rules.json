@@ -55,6 +55,12 @@
 				"action": "getBackup"
 			}
 		},
+		"delete/backup": {
+			"GET": {
+				"controller": "local",
+				"action": "deleteBackup"
+			}
+		},
 		"retrieve/files-comparison": {
 			"*": {
 				"controller": "index",

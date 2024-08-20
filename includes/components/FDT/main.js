@@ -40,7 +40,6 @@
         document.querySelector('.modal.comparison .upload_action').addEventListener('click', deployHandler);
         document.querySelector('.modal.comparison .refresh_comparisons').addEventListener('click', retrieveFileComparison);
 
-        //document.querySelector('.modal.backups .reload_backups').addEventListener('click', reloadBackups);
         reloadBackups();
     }
 
@@ -382,6 +381,17 @@
         serverPromise('retrieve/backup?render=true&backup='+e.currentTarget.getAttribute('data-name')+'&project='+e.currentTarget.getAttribute('data-project')).then((pContent)=>{
             document.querySelector('.modal.backups .body .files').innerHTML = pContent.html||"Une erreur est apparue";
             document.querySelector('.modal.backups .body .actions .compare_backup').addEventListener('click', compareBackUpHandler);
+            document.querySelector('.modal.backups .body .actions .delete_backup').addEventListener('click', deleteBackUpHandler);
+        });
+    }
+
+    function deleteBackUpHandler(){
+        if(!confirm('Confirmez-vous la suppression de la sauvegarde ?')){
+            return;
+        }
+        let currentSave = document.querySelector('.modal.backups .body .backups ul li.current');
+        serverPromise('delete/backup?backup='+currentSave.getAttribute('data-name')+'&project='+currentSave.getAttribute('data-project')).then((pContent)=>{
+            loadBackupList({currentTarget:document.querySelector('.modal.backups .body .projects ul li.current')});
         });
     }
 
