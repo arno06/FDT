@@ -2,10 +2,10 @@
 namespace app\main\controllers\front
 {
 
+    use app\main\models\ModelEnv;
     use app\main\src\application\FDTController;
     use core\application\Autoload;
     use core\system\File;
-    use core\utils\DiffResult;
     use core\utils\StringDiff;
 
     class index extends FDTController
@@ -16,7 +16,8 @@ namespace app\main\controllers\front
         }
 
         public function index(){
-            $this->addContent('envs', File::read('includes/resources/envs.json'));
+            $m = new ModelEnv();
+            $this->addContent('envs', $m->all());
             Autoload::addComponent('FDT');
         }
 
