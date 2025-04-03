@@ -269,10 +269,32 @@
         body.querySelector('.list').innerHTML = perDays.reduce((pHTML, pFiles)=>{
             return pHTML + '<div class="sublist"><div class="title">'+pFiles[0].dateString+'</div>'+pFiles.reduce((pHTMLList, pFile)=>{
                 let id = pFile.filename.replace(/([.\/])/g, '_');
-                return pHTMLList + '<div class="day"><div><input id="'+id+'" type="checkbox" value="'+pFile.filename+'"'+(selected_files.includes(pFile.filename)?' checked':'')+'></div><label for="'+id+'" class="name" title="'+pFile.filename+'">'+pFile.file+'</label><div class="hours">'+pFile.hourString+'</div></div>';
+                return pHTMLList + '<div class="day"><div><input id="'+id+'" data-datetime="'+pFile.dateString+' '+pFile.hourString+'" type="checkbox" value="'+pFile.filename+'"'+(selected_files.includes(pFile.filename)?' checked':'')+'></div><label for="'+id+'" class="name" title="'+pFile.filename+'">'+pFile.file+'</label><div class="hours">'+pFile.hourString+'</div></div>';
             }, "")+'</div>';
         }, "");
 
+        body.querySelectorAll('.list .sublist .hours').forEach((pEl)=>{
+            const ref = pEl.parentNode.querySelector('input[data-datetime]');
+            let dt = ref.getAttribute("data-datetime");
+            let items = body.querySelectorAll('.list .sublist input[data-datetime="'+dt+'"]');
+            pEl.addEventListener('click', (e)=>{
+                let state = ref.checked;
+                items.forEach((pInput)=>{
+                    pInput.checked = !state;
+                });
+            });
+            pEl.addEventListener('mouseover', (e)=>{
+                items.forEach((pInput)=>{
+                    pInput.parentNode.parentNode.classList.add("highlight");
+                });
+            });
+
+            pEl.addEventListener('mouseout', (e)=>{
+                items.forEach((pInput)=>{
+                    pInput.parentNode.parentNode.classList.remove("highlight");
+                });
+            });
+        });
         body.querySelectorAll('.list .sublist input[type="checkbox"]').forEach((pInput)=>{
             pInput.addEventListener('change', (e)=>{
                 if(e.currentTarget.checked){

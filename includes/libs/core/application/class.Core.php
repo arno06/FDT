@@ -197,6 +197,12 @@ namespace core\application {
         static public function parseURL($pUrl = null)
         {
             Configuration::$server_domain = $_SERVER["SERVER_NAME"];
+            if(isset($_SERVER['SERVER_PORT']) || isset($_SERVER['HTTP_X_FORWARDED_PORT'])){
+                $port = isset($_SERVER['SERVER_PORT'])?$_SERVER['SERVER_PORT']:$_SERVER['HTTP_X_FORWARDED_PORT'];
+                if(!in_array($port, [80,443])){
+                    Configuration::$server_domain .= ":".$port;
+                }
+            }
             $protocol = "http" . (self::isHttps() ? 's' : '') . "://";
             Configuration::$server_folder = preg_replace('/\/(index).php$/', "", $_SERVER["SCRIPT_NAME"]);
             Configuration::$server_folder = preg_replace('/^\//', "", Configuration::$server_folder);

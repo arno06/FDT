@@ -20,7 +20,11 @@ namespace app\main\src\application{
             }
             $login_result = ftp_login($this->ftp, $user, $pass);
             if (!$login_result) {
-                return false;
+                $this->ftp = ftp_connect($host);
+                $login_result = ftp_login($this->ftp, $user, $pass);
+                if (!$login_result) {
+                    return false;
+                }
             }
             ftp_pasv($this->ftp, true);
 
