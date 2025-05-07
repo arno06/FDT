@@ -278,9 +278,8 @@
             let dt = ref.getAttribute("data-datetime");
             let items = body.querySelectorAll('.list .sublist input[data-datetime="'+dt+'"]');
             pEl.addEventListener('click', (e)=>{
-                let state = ref.checked;
                 items.forEach((pInput)=>{
-                    pInput.checked = !state;
+                    pInput.click();
                 });
             });
             pEl.addEventListener('mouseover', (e)=>{
