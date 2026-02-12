@@ -146,6 +146,9 @@ namespace app\main\controllers\front
         private function readFiles($pPath, $pIgnore){
             $return = array();
             $dossier = opendir($pPath);
+            if(!$dossier){
+                return $return;
+            }
             $pPath = preg_replace('/\/$/', "", $pPath);
             while ($file = readdir($dossier))
             {

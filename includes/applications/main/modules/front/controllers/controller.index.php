@@ -5,6 +5,7 @@ namespace app\main\controllers\front
     use app\main\models\ModelEnv;
     use app\main\src\application\FDTController;
     use core\application\Autoload;
+    use core\data\SimpleJSON;
     use core\system\File;
     use core\utils\StringDiff;
 
@@ -13,11 +14,14 @@ namespace app\main\controllers\front
 
         public function __construct()
         {
+
         }
 
         public function index(){
             $m = new ModelEnv();
-            $this->addContent('envs', $m->all());
+            $envs = $m->all();
+            $this->addContent('envs', SimpleJSON::encode($envs));
+            $this->addContent('environments', $envs);
             Autoload::addComponent('FDT');
         }
 

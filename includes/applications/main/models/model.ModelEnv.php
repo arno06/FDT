@@ -13,9 +13,9 @@ namespace app\main\models
         public function all(){
             $envs = $this->loadFile();
             usort($envs, function($pA, $pB){
-                return strcmp($pA['name'], $pB['name']);
+                return strcmp(strtolower($pA['name']), strtolower($pB['name']));
             });
-            return SimpleJSON::encode($envs);
+            return $envs;
         }
 
         public function insert($pValues){

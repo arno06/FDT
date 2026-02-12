@@ -4,6 +4,14 @@
 
     const GIT_CHECK_CONCURRENT_CALLS = 4;
 
+    const TITLES = {
+        project:'Choix du projet',
+        selection:'📁',
+        comparison:'🆚',
+        deployment:'Déploiement',
+        backups:'Sauvegardes'
+    };
+
     let checkGitStatus = false;
     let project_files;
     let environments = [];
@@ -40,6 +48,7 @@
         document.querySelector('.modal.comparison .upload_action').addEventListener('click', deployHandler);
         document.querySelector('.modal.comparison .refresh_comparisons').addEventListener('click', retrieveFileComparison);
 
+
         reloadBackups();
     }
 
@@ -48,55 +57,54 @@
         if(!environments.length){
             return;
         }
-        let parent = document.createElement('div');
-        parent.classList.add('envs');
-        let select = document.createElement('select');
-        parent.appendChild(select);
-        document.querySelector('.modal.project').insertBefore(parent, document.querySelector('.modal.project .steps'));
-        let empty = document.createElement('option');
-        empty.value = "none";
-        select.appendChild(empty);
-        environments.forEach((pEnv, pIdx)=>{
-            let option = document.createElement('option');
-            option.value = pIdx;
-            option.innerHTML = pEnv.name;
-            select.appendChild(option);
-        });
-        select.addEventListener('change', (e)=>{
-            if(e.currentTarget.value === "none"){
-                return;
-            }
-            let env = environments[Number(e.currentTarget.value)];
-            if(!env){
-                return;
-            }
-            project_files = [];
-            document.querySelector('input[name="local_folder"]').value = env.local_folder;
-            document.querySelector('input[name="domain"]').value = env.domain;
-            document.querySelector('input[name="host"]').value = env.ftp.host;
-            document.querySelector('input[name="user"]').value = env.ftp.user;
-            document.querySelector('input[name="pass"]').value = env.ftp.pass;
-            document.querySelector('input[name="folder"]').value = env.ftp.folder;
-            document.querySelector('input[name="name"]').value = env.name;
-            checkGitStatus = env.checkgit||false;
-            if(checkGitStatus){
-                document.querySelector('input[name="checkgit"]').setAttribute("checked", "checked");
-            }else{
-                document.querySelector('input[name="checkgit"]').removeAttribute("checked");
-            }
-            currentEnv = {
-                local_folder:env.local_folder,
-                domain:env.domain,
-                host:env.ftp.host,
-                user:env.ftp.user,
-                pass:env.ftp.pass,
-                folder:env.ftp.folder,
-                name:env.name
-            };
+        document.querySelectorAll('.modal.project .projects>div').forEach((pProject)=>{
+            pProject.addEventListener('click', (e)=>{
+                document.querySelector('.modal.project .projects>div.selected')?.classList.remove("selected");
+                e.currentTarget.classList.add("selected");
+                projectSelectedHandler({currentTarget:{value:e.currentTarget.getAttribute("data-id")}});
+            });
         });
     }
 
+    function projectSelectedHandler(e){
+        if(e.currentTarget.value === "none"){
+            return;
+        }
+        let env = environments[Number(e.currentTarget.value)];
+        if(!env){
+            return;
+        }
+        project_files = [];
+        document.querySelector('input[name="local_folder"]').value = env.local_folder;
+        document.querySelector('input[name="domain"]').value = env.domain;
+        document.querySelector('input[name="host"]').value = env.ftp.host;
+        document.querySelector('input[name="user"]').value = env.ftp.user;
+        document.querySelector('input[name="pass"]').value = env.ftp.pass;
+        document.querySelector('input[name="folder"]').value = env.ftp.folder;
+        document.querySelector('input[name="name"]').value = env.name;
+        checkGitStatus = env.checkgit||false;
+        if(checkGitStatus){
+            document.querySelector('input[name="checkgit"]').setAttribute("checked", "checked");
+        }else{
+            document.querySelector('input[name="checkgit"]').removeAttribute("checked");
+        }
+        currentEnv = {
+            local_folder:env.local_folder,
+            domain:env.domain,
+            host:env.ftp.host,
+            user:env.ftp.user,
+            pass:env.ftp.pass,
+            folder:env.ftp.folder,
+            name:env.name
+        };
+        selected_files = [];
+        project_files = [];
+    }
+
     function startHandler(){
+
+        document.querySelector('header .selected_project').innerHTML = currentEnv.name;
+
         let startingModalActions = document.querySelector('.modal.project .actions');
         startingModalActions.classList.toggle('loading');
 
@@ -135,8 +143,9 @@
     }
 
     function listFileHandler(){
+        setTitle(TITLES.selection);
         let body = document.querySelector('.modal.selection .body');
-        body.innerHTML = '<div class="loading_message">Chargement</div>';
+        body.innerHTML = '<div class="loading_message">Chargement...</div>';
         serverPromise('list/local-files', ['local_folder']).then(async (pResult)=>{
 
             project_files = pResult.content.files;
@@ -152,7 +161,7 @@
                 if(to){
                     clearTimeout(to);
                 }
-                to = setTimeout(renderFiles, 100);
+                to = setTimeout(renderFiles, 200);
             };
             document.querySelector('input[name="search"]').addEventListener('change', changeSearchHandler);
             document.querySelector('input[name="search"]').addEventListener('search', changeSearchHandler);
@@ -272,28 +281,28 @@
                 return pHTMLList + '<div class="day"><div><input id="'+id+'" data-datetime="'+pFile.dateString+' '+pFile.hourString+'" type="checkbox" value="'+pFile.filename+'"'+(selected_files.includes(pFile.filename)?' checked':'')+'></div><label for="'+id+'" class="name" title="'+pFile.filename+'">'+pFile.file+'</label><div class="hours">'+pFile.hourString+'</div></div>';
             }, "")+'</div>';
         }, "");
-
         body.querySelectorAll('.list .sublist .hours').forEach((pEl)=>{
             const ref = pEl.parentNode.querySelector('input[data-datetime]');
             let dt = ref.getAttribute("data-datetime");
-            let items = body.querySelectorAll('.list .sublist input[data-datetime="'+dt+'"]');
+            let selector = '.list .sublist input[data-datetime="'+dt+'"]';
             pEl.addEventListener('click', (e)=>{
-                items.forEach((pInput)=>{
+                body.querySelectorAll(selector).forEach((pInput)=>{
                     pInput.click();
                 });
             });
             pEl.addEventListener('mouseover', (e)=>{
-                items.forEach((pInput)=>{
+                body.querySelectorAll(selector).forEach((pInput)=>{
                     pInput.parentNode.parentNode.classList.add("highlight");
                 });
             });
 
             pEl.addEventListener('mouseout', (e)=>{
-                items.forEach((pInput)=>{
+                body.querySelectorAll(selector).forEach((pInput)=>{
                     pInput.parentNode.parentNode.classList.remove("highlight");
                 });
             });
         });
+
         body.querySelectorAll('.list .sublist input[type="checkbox"]').forEach((pInput)=>{
             pInput.addEventListener('change', (e)=>{
                 if(e.currentTarget.checked){
@@ -302,16 +311,18 @@
                     selected_files = selected_files.filter((pVal)=>pVal !== e.currentTarget.value);
                 }
                 document.querySelector('.modal.selection header .button .count').innerHTML = '('+selected_files.length+')';
+                setTitle(TITLES.selection+" ("+selected_files.length+")");
             });
         });
     }
 
     function retrieveFileComparison(){
-        document.querySelector('.modal.comparison .body').innerHTML = '<div class="loading_message">Chargement</div>';
+        setTitle(TITLES.comparison+" ("+selected_files.length+")");
+        document.querySelector('.modal.comparison .body').innerHTML = '<div class="loading_message">Chargement...</div>';
         let params = Object.assign({}, currentEnv);
         params.files = selected_files;
         serverPromise('retrieve/files-comparison?render=true', params).then((pContent)=>{
-            document.querySelector('.modal.comparison .body').innerHTML = pContent.html||"Une erreur est apparue";
+            document.querySelector('.modal.comparison .body').innerHTML = pContent?.html||"Une erreur est apparue";
         });
     }
 
@@ -450,6 +461,7 @@
         if(!current){
             reloadBackups();
             console.log("finished");
+            setTitle("✅");
             return;
         }
         serverPromise(current.url, pParams).then((pResponse)=>{
@@ -458,6 +470,7 @@
                 classes[current.name] = {remove:"current", add:"error"};
                 setStep(classes);
                 console.log(pResponse);
+                setTitle("❌");
                 return;
             }
             nextStep(pParams);
@@ -480,6 +493,7 @@
         if(pModal === "project"){
             document.querySelector('.modal.project .env select')?.dispatchEvent(new Event('change'));
         }
+        setTitle(TITLES[pModal]);
         document.querySelector('.modal:not(.hidden)')?.classList.add('hidden');
         document.querySelector('.modal.'+pModal).classList.remove('hidden');
         if(document.querySelector('.breadcrumb li.current')){
@@ -498,6 +512,10 @@
             pVal[pInput.name] = pInput.value;
             return pVal;
         }, {});
+    }
+
+    function setTitle(pInfo){
+        document.querySelector("title").innerHTML = pInfo + " | FDT";
     }
 
     window.addEventListener('DOMContentLoaded', init);
