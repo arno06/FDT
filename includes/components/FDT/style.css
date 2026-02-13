@@ -40,11 +40,11 @@ body>.content{flex: 1 1 auto;position:relative;}
 .modal{max-height:750px;height:100%;box-sizing:border-box;transition:all .3s;position:absolute;left:50%;top:50%;transform:translate(-50%, -50%);background:#fff;padding:1em;box-shadow: 0 1px 3px rgba(0, 0, 0, .3);display:flex;flex-direction: column;overflow: hidden;}
 .modal.hidden{opacity: 0;pointer-events: none;margin-top:50px;}
 
-.modal.project{height:600px;}
+.modal.project{height:620px;}
 
 .modal.project div.envs{display:flex;justify-content: center;}
-.modal.project div.projects{display:flex;flex-wrap: wrap;gap:1em;max-height:284px;overflow: auto;margin-bottom:2em;}
-.modal.project div.projects>div{cursor:pointer;opacity:0.5;transition:all .3s;padding:0.5em;width:150px;height:70px;background:#efefef;border-radius:5px;display:flex;flex-direction: column;justify-content: space-between;}
+.modal.project div.projects{padding:2px;display:flex;flex-wrap: wrap;gap:1em;max-height:304px;overflow: auto;margin-bottom:2em;justify-content: center;}
+.modal.project div.projects>div{outline:solid 2px transparent;cursor:pointer;opacity:0.5;transition:all .3s;padding:0.5em;width:150px;height:70px;background:#efefef;border-radius:5px;display:flex;flex-direction: column;justify-content: space-between;}
 .modal.project div.projects>div.selected,.modal.project div.projects>div:hover{opacity:1;outline:solid 2px #2A80B9;}
 .modal.project div.projects>div>label{cursor:pointer;font-weight: bold;}
 .modal.project div.projects>div>div{display:flex;gap:2px;flex-wrap:wrap;}

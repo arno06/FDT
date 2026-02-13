@@ -36,7 +36,7 @@
                 </div>
             {/foreach}
         </div>
-        <div class="steps">
+        <div class="steps" style="display:none;">
             <div class="step">
                 <span class="number local_folder">1</span>
                 <label>Dossier de travail</label>

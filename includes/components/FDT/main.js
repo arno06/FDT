@@ -105,6 +105,8 @@
 
         document.querySelector('header .selected_project').innerHTML = currentEnv.name;
 
+        let steps = document.querySelector('.modal.project .steps');
+        steps.style.display = "none";
         let startingModalActions = document.querySelector('.modal.project .actions');
         startingModalActions.classList.toggle('loading');
 
@@ -127,6 +129,13 @@
                 number_ftp.classList.add(c);
                 number_ftp.innerHTML = '2<span class="material-symbols-outlined">'+c+'</span>';
 
+                startingModalActions.classList.toggle('loading');
+
+                if(!checkFTP || !checkFolder){
+                    steps.style.display = "flex";
+                    return;
+                }
+
                 if(checkFolder && checkFTP){
                     document.querySelector('.modal.selection header h2').innerHTML = document.querySelector('input[name="local_folder"]').value+'<span>'+checkFolder.branch+'</span>';
                     selected_files = [];
@@ -135,7 +144,6 @@
                     listFileHandler();
                     setTimeout(()=>{
                         displayModal('selection');
-                        startingModalActions.classList.toggle('loading');
                     }, 500);
                 }
             });
