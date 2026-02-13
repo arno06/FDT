@@ -24,6 +24,7 @@ If you want to save you project setup, you can edit the `includes/resources/envs
 ```json
 [
   {
+    "tags": ["some", "tags"],
     "name": "Project Name only used in the first screen",
     "ftp": {
       "host": "...",
